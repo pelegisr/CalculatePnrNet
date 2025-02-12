@@ -10,10 +10,51 @@ namespace Peleg.CalculatePnrNet.Services
     class GlobalParameterService
     {
         private readonly PnrDbContext _context;
-
         public GlobalParameterService(PnrDbContext context)
         {
             _context = context;
+        }
+
+        private string _dateFormat;
+
+        public string DateFormat
+        {
+            get
+            {
+                if (_dateFormat == null)
+                {
+                    var dateFormat = GetNumericValue("DateFormat");
+
+                    // Define an array for quick lookup
+                    string[] dateFormats = new string[]
+                    {
+                        "yyyy-MM-dd", // Index 0 (default fallback)
+                        "MM/dd/yy", // 1 - USA style
+                        "", // 2 (not defined)
+                        "dd/MM/yy", // 3 - British/French style
+                        "dd.MM.yy", // 4 - German style
+                        "", "", "", "", "", // 5-9 (not defined)
+                        "MM-dd-yy", // 10 - USA style with hyphens
+                        "yy/MM/dd", // 11 - Japanese style
+                        "yy.MM.dd", // 12 - Japanese style
+                        "dd MMM yy", // 13 - British style with abbreviated month
+                        "HH:mm:ss", // 14 - Time only (24-hour format)
+                        "", "", "", "", "", // 15-19 (not defined)
+                        "yyyy-MM-dd", // 20 - ISO 8601 standard
+                        "yyyy-MM-dd HH:mm:ss", // 21 - ISO 8601 with time
+                        "", // 22 (not defined)
+                        "yyyy/MM/dd" // 23 - ISO 8601 without hyphens
+                    };
+
+                    // Assign the format, ensuring we stay within bounds
+                    _dateFormat = (dateFormat >= 1 && dateFormat < dateFormats.Length &&
+                                   !string.IsNullOrEmpty(dateFormats[dateFormat]))
+                        ? dateFormats[dateFormat]
+                        : dateFormats[0]; // Default to "yyyy-MM-dd"
+                }
+
+                return _dateFormat;
+            }
         }
 
         public int GetNumericValue(string paramName)
@@ -37,9 +78,9 @@ namespace Peleg.CalculatePnrNet.Services
             try
             {
                 return _context.globals
-                .Where(g => g.name == paramName)
-                .Select(g => g.c_value)
-                .FirstOrDefault() ?? "";       // Return 0 if null
+                    .Where(g => g.name == paramName)
+                    .Select(g => g.c_value)
+                    .FirstOrDefault() ?? ""; // Return 0 if null
             }
             catch (Exception ex)
             {
@@ -52,11 +93,6 @@ namespace Peleg.CalculatePnrNet.Services
         {
             try
             {
-                //TODO: take date format from DB
-                //DECLARE @date_format int
-                //SET     @date_format = dbo.PLG_Global_n('DateFormat')
-                int dateFormat = 3;
-
                 var param = _context.globals
                     .Where(g => g.name == paramName)
                     .Select(g => new
@@ -71,8 +107,9 @@ namespace Peleg.CalculatePnrNet.Services
                 if (param != null)
                 {
                     var formattedValue = param.c_value ??
-                                            (param.n_value != null ? param.n_value.ToString() :
-                                                (param.d_value.HasValue ? ConvertDateFormat(param.d_value.Value, dateFormat) : null));
+                                         (param.n_value != null
+                                             ? param.n_value.ToString()
+                                             : param.d_value?.ToString(DateFormat));
 
                     return (formattedValue, param.Type);
                 }
@@ -91,50 +128,7 @@ namespace Peleg.CalculatePnrNet.Services
             }
         }
 
-        public static string ConvertDateFormat(DateTime date, int sqlStyle)
-        {
-            string format;
-            switch (sqlStyle)
-            {
-                case 1:
-                    format = "MM/dd/yy"; // USA style
-                    break;
-                case 3:
-                    format = "dd/MM/yy"; // British/French style
-                    break;
-                case 4:
-                    format = "dd.MM.yy"; // German style
-                    break;
-                case 10:
-                    format = "MM-dd-yy"; // USA style with hyphens
-                    break;
-                case 11:
-                    format = "yy/MM/dd"; // Japanese style
-                    break;
-                case 12:
-                    format = "yy.MM.dd"; // Japanese style
-                    break;
-                case 13:
-                    format = "dd MMM yy"; // British style with abbreviated month
-                    break;
-                case 14:
-                    format = "HH:mm:ss"; // 24-hour format (time only)
-                    break;
-                case 20:
-                    format = "yyyy-MM-dd"; // ISO 8601 (standard date format)
-                    break;
-                case 21:
-                    format = "yyyy-MM-dd HH:mm:ss"; // ISO 8601 with time
-                    break;
-                case 23:
-                    format = "yyyy/MM/dd"; // ISO 8601 without hyphens
-                    break;
-                default:
-                    format = "yyyy-MM-dd"; // Default to ISO if unknown
-                    break;
-            }
 
-            return date.ToString(format);
-        }
+
     }
 }
