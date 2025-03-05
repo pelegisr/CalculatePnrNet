@@ -60,8 +60,9 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="UPanel">
-      <HintPath>..\..\TopPnr\TestTopPnr\bin\Debug\UPanel.dll</HintPath>
+    <Reference Include="UPanel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=998d9abab6a65c30, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Odyssea\NET.PELEG4\UPanel.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

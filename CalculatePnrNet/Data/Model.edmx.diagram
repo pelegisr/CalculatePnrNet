@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="730eda394f264abcba2c50fed7a9b35b" Name="Diagram1" ZoomLevel="43">
+      <Diagram DiagramId="730eda394f264abcba2c50fed7a9b35b" Name="Diagram1" ZoomLevel="109">
         <EntityTypeShape EntityType="test_OdysseaModel.PNR" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="test_OdysseaModel.global" Width="1.5" PointX="3.875" PointY="1.125" />
         <EntityTypeShape EntityType="test_OdysseaModel.Pnr_La" Width="1.5" PointX="3" PointY="5.25" />
@@ -12,6 +12,7 @@
         <EntityTypeShape EntityType="test_OdysseaModel.Pnr_Free" Width="1.5" PointX="5.375" PointY="5.75" />
         <EntityTypeShape EntityType="test_OdysseaModel.Pnr_rate" Width="1.5" PointX="3" PointY="14" />
         <AssociationConnector Association="test_OdysseaModel.FK_Pnr_rate_Pnr" />
+        <EntityTypeShape EntityType="test_OdysseaModel.PCK_Package" Width="1.5" PointX="7.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

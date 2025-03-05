@@ -1,18 +1,22 @@
-﻿using System;
+﻿using Peleg.CalculatePnrNet.Data;
+using Peleg.CalculatePnrNet.Services;
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using NLog;
-using Peleg.CalculatePnrNet.Data;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Peleg.CalculatePnrNet.Services
+namespace Peleg.CalculatePnrNet.DTO
 {
-    public class CalculateService : IDisposable
+    public class GlobalParameters
     {
-        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
-        private readonly PnrDbContext _context;
         private readonly GlobalParameterService _globalParameterService;
-        private readonly int pnrId;
+        private readonly PnrDbContext _context;
 
-        #region Parameters
+        public GlobalParameters(PnrDbContext context)
+        {
+            _globalParameterService = new GlobalParameterService(context);
+        }
 
         private bool? _seatWithCommiss;
         public bool SeatWithCommiss
@@ -53,21 +57,7 @@ namespace Peleg.CalculatePnrNet.Services
             }
         }
 
-        private bool? _WithInsurance;
-        public bool WithInsurance
-        {
-            get
-            {
-                if (_WithInsurance == null)
-                {
-                    _WithInsurance = _context.Pnr_Free
-                        .Any(p => p.Service == "INS"
-                                  && new[] { "OK", "RQ" }.Contains(p.Status)
-                                  && p.Pnr_Pnr == pnrId) ? true : false;
-                }
-                return _WithInsurance.Value; // Ensures a non-null return value
-            }
-        }
+        
 
         private bool? _buildFltVch;
         public bool Build_Flt_Vch
@@ -94,23 +84,7 @@ namespace Peleg.CalculatePnrNet.Services
                 return _mustCheckMealAdd.Value;
             }
         }
-
-        private bool? _groupCostingExists;
-        public bool GroupCostingExists
-        {
-            get
-            {
-                if (_groupCostingExists == null)
-                {
-                    _groupCostingExists = _context.Pnr_rate
-                        .Any(p => p.Pnr_pnr == pnrId && p.Pnrr_service == "CST");
-                }
-
-                return _groupCostingExists.Value;
-            }
-        }
-
-
+       
         private bool? _babyPayNetFlt;
         public bool BabyPayNetFlt
         {
@@ -305,125 +279,11 @@ namespace Peleg.CalculatePnrNet.Services
                 if (_atcEnabled == null)
                 {
                     var value = _globalParameterService.GetNumericValue("ATC_Enabled");
-                    _atcEnabled = value == null ? false : value == 1;
+                    _atcEnabled = value == 0 ? false : Convert.ToBoolean(value);
                 }
                 return _atcEnabled.Value;
             }
         }
 
-        #endregion
-
-
-        public CalculateService(string connectionString, int pnrId)
-        {
-            Logger.Debug("Connection String: {0}", connectionString);
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                Logger.Error("Connection string cannot be null or empty");
-                throw new ArgumentException("Connection string cannot be null or empty", nameof(connectionString));
-            }
-            var dataModelConnectionString = NaumTools.Utils.Sql2Entity(connectionString, "Data.Model");
-            Logger.Debug(dataModelConnectionString);
-            _context = new PnrDbContext(dataModelConnectionString);
-
-            Logger.Debug("Pnr Id: {0}", pnrId);
-
-            if (pnrId <= 0)
-            {
-                Logger.Error("Invalid PNR ID: {0}", pnrId);
-                throw new ArgumentException("PNR cannot be null or empty", nameof(pnrId));
-            }
-
-            if (!PnrExists(pnrId))
-            {
-                Logger.Warn("PNR with ID {0} does not exist.", pnrId);
-                throw new InvalidOperationException($"PNR with ID {pnrId} does not exist.");
-            }
-            this.pnrId = pnrId;
-
-            _globalParameterService = new GlobalParameterService(_context);
-        }
-
-        public decimal CalculateGross()
-        {
-            Logger.Info("Starting calculation for PNR ID: {0}", pnrId);
-
-            try
-            {
-                // Perform the calculation 
-                decimal grossAmount = 0; // Example calculation
-                Logger.Info("Gross amount calculated successfully: {0}", grossAmount);
-                return grossAmount;
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, "An error occurred while calculating the gross amount for PNR ID {0}", pnrId);
-                throw new InvalidOperationException("An error occurred while calculating gross amount.", ex);
-            }
-        }
-
-        private bool PnrExists(int pnrId)
-        {
-            return _context.PNRs.Any(p => p.pnr_Pnr == pnrId);
-        }
-
-        private void SetParameters()
-        {
-            /*
-             *
-               59       TRSUpd = False
-               60       PrintErrorMessage = True
-               61       EmptyGross9999 = False
-               62       Is_Declared_Price = False
-               63       WasEmptyPrice = False
-               64       Free_Only = False
-               70       '**** 20/05/08 ***
-               72       Calculated_By_Declared_Price = False
-               73       '25/10/15
-               74       Is_Declared_Gross = False
-               75       Is_Declared_Net = False
-               
-               76       Pck_Updated = ""
-               77       '24/05/18
-               78     
-                        ClearDictionaries
-               
-               104      '----------------------------------
-               105      LineWasCalculated.RemoveAll
-               
-               106      ErrFlag = 0
-               107      BruttoWithoutTax = 0
-               108      ChangeNetSpl = False
-               109      HotelWasCalculated = False
-               110      RT_As_2OW = False
-               111      '06/08/07
-               112      ShowDPCDebug = CBool(GetNumericValue("ShowDPCDebug") = 1)
-               113      CruiseEnable = CBool(GetNumericValue("CruiseEnable") = 1)
-               114      EventAsHotel = GetGlobalParametr("EventsAsHotel")
-               
-               116      HtlChoiceBasket = CBool(GetNumericValue("HtlChoiceBasket") = 1)
-               
-               117      '-----------------------------------------------------------
-               118      '11/04/10
-               119      CarNotRounded = True
-               120      ' 12/07/06
-               121      ArpTaxNetByAgt = False
-               122      ArpTaxNetByAgt = CBool(GetNumericValue("ArpTaxNetByAgt") = 1)
-               123      ATC_Enabled = IIf(IsNull(GetNumericValue("ATC_Enabled")), 0, GetNumericValue("ATC_Enabled"))
-               
-               124      If ATC_Enabled = 1 Then
-               125          DE.cmdCheckATC_InPNR prmPNR
-               126          ATC_Enabled = DE.rscmdCheckATC_InPNR!ATC
-               127          DE.rscmdCheckATC_InPNR.Close
-               128      End If '»If ATC_Enabled = 1 Then
-                */
-             
-        }
-
-        public void Dispose()
-        {
-            _context?.Dispose();
-        }
     }
 }
-

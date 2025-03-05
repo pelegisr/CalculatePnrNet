@@ -30,5 +30,6 @@ namespace Peleg.CalculatePnrNet.Data
         public virtual DbSet<Pnr_La> Pnr_La { get; set; }
         public virtual DbSet<Pnr_Free> Pnr_Free { get; set; }
         public virtual DbSet<Pnr_rate> Pnr_rate { get; set; }
+        public virtual DbSet<PCK_Package> PCK_Package { get; set; }
     }
 }

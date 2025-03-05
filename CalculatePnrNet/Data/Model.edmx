@@ -20,6 +20,58 @@
           <Property Name="upd_date" Type="datetime" Nullable="false" />
           <Property Name="is_public" Type="bit" Nullable="false" />
         </EntityType>
+        <EntityType Name="PCK_Package">
+          <Key>
+            <PropertyRef Name="PCK_ID" />
+          </Key>
+          <Property Name="PCK_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="code" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="name_local" Type="varchar" MaxLength="50" />
+          <Property Name="Room_Type_bas" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Room_Code_bas" Type="varchar" MaxLength="3" Nullable="false" />
+          <Property Name="cc" Type="varchar" MaxLength="3" Nullable="false" />
+          <Property Name="dest_from" Type="varchar" MaxLength="3" Nullable="false" />
+          <Property Name="destination_1" Type="varchar" MaxLength="3" Nullable="false" />
+          <Property Name="destination_2" Type="varchar" MaxLength="3" />
+          <Property Name="flt_duration" Type="smallint" Nullable="false" />
+          <Property Name="flt_duration_to" Type="smallint" />
+          <Property Name="minimum_px" Type="smallint" Nullable="false" />
+          <Property Name="mixed_airline_only" Type="smallint" Nullable="false" />
+          <Property Name="mixed_regular_only" Type="smallint" Nullable="false" />
+          <Property Name="rq_flt" Type="smallint" Nullable="false" />
+          <Property Name="rq_la" Type="smallint" Nullable="false" />
+          <Property Name="price_flt_only" Type="smallint" Nullable="false" />
+          <Property Name="status" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="reference" Type="int" />
+          <Property Name="supplier" Type="varchar" MaxLength="6" Nullable="false" />
+          <Property Name="service" Type="varchar" MaxLength="3" Nullable="false" />
+          <Property Name="subj_id" Type="int" />
+          <Property Name="ext_code" Type="varchar" MaxLength="10" />
+          <Property Name="IsHotel" Type="bit" Nullable="false" />
+          <Property Name="IsCar" Type="bit" Nullable="false" />
+          <Property Name="IsTranslateCC" Type="bit" Nullable="false" />
+          <Property Name="IsInternetView" Type="bit" Nullable="false" />
+          <Property Name="IsDesktopView" Type="bit" Nullable="false" />
+          <Property Name="IsRestrictActive" Type="bit" Nullable="false" />
+          <Property Name="IsMainInGroup" Type="bit" Nullable="false" />
+          <Property Name="IsOverNight" Type="bit" Nullable="false" />
+          <Property Name="IsNetto" Type="bit" Nullable="false" />
+          <Property Name="LastMinutes" Type="datetime" />
+          <Property Name="WeekDays" Type="tinyint" />
+          <Property Name="comission" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="category" Type="char" MaxLength="1" />
+          <Property Name="lang" Type="char" MaxLength="2" />
+          <Property Name="pckClass" Type="char" MaxLength="1" />
+          <Property Name="exchangeRate" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="itin_id" Type="int" />
+          <Property Name="TourQuotId" Type="int" />
+          <Property Name="feedback_id" Type="int" />
+          <Property Name="isBClientOnly" Type="bit" Nullable="false" />
+          <Property Name="price_id" Type="int" />
+          <Property Name="dateUpd" Type="datetime" Nullable="false" />
+          <Property Name="usr" Type="varchar" MaxLength="25" />
+        </EntityType>
         <EntityType Name="PNR">
           <Key>
             <PropertyRef Name="pnr_Pnr" />
@@ -266,6 +318,7 @@ warning 6002: The table/view 'test_Odyssea.dbo.Pnr_rate' does not have a primary
         </Association>
         <EntityContainer Name="test_OdysseaModelStoreContainer">
           <EntitySet Name="global" EntityType="Self.global" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PCK_Package" EntityType="Self.PCK_Package" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PNR" EntityType="Self.PNR" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Pnr_Free" EntityType="Self.Pnr_Free" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Pnr_La" EntityType="Self.Pnr_La" Schema="dbo" store:Type="Tables" />
@@ -387,6 +440,7 @@ warning 6002: The table/view 'test_Odyssea.dbo.Pnr_rate' does not have a primary
             <End Role="PNR" EntitySet="PNRs" />
             <End Role="Pnr_rate" EntitySet="Pnr_rate" />
           </AssociationSet>
+          <EntitySet Name="PCK_Package" EntityType="test_OdysseaModel.PCK_Package" />
         </EntityContainer>
         <EntityType Name="global">
           <Key>
@@ -596,6 +650,58 @@ warning 6002: The table/view 'test_Odyssea.dbo.Pnr_rate' does not have a primary
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="PCK_Package">
+          <Key>
+            <PropertyRef Name="PCK_ID" />
+          </Key>
+          <Property Name="PCK_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="code" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="name_local" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Room_Type_bas" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Room_Code_bas" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="cc" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="dest_from" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="destination_1" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="destination_2" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="flt_duration" Type="Int16" Nullable="false" />
+          <Property Name="flt_duration_to" Type="Int16" />
+          <Property Name="minimum_px" Type="Int16" Nullable="false" />
+          <Property Name="mixed_airline_only" Type="Int16" Nullable="false" />
+          <Property Name="mixed_regular_only" Type="Int16" Nullable="false" />
+          <Property Name="rq_flt" Type="Int16" Nullable="false" />
+          <Property Name="rq_la" Type="Int16" Nullable="false" />
+          <Property Name="price_flt_only" Type="Int16" Nullable="false" />
+          <Property Name="status" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="reference" Type="Int32" />
+          <Property Name="supplier" Type="String" Nullable="false" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="service" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="subj_id" Type="Int32" />
+          <Property Name="ext_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="IsHotel" Type="Boolean" Nullable="false" />
+          <Property Name="IsCar" Type="Boolean" Nullable="false" />
+          <Property Name="IsTranslateCC" Type="Boolean" Nullable="false" />
+          <Property Name="IsInternetView" Type="Boolean" Nullable="false" />
+          <Property Name="IsDesktopView" Type="Boolean" Nullable="false" />
+          <Property Name="IsRestrictActive" Type="Boolean" Nullable="false" />
+          <Property Name="IsMainInGroup" Type="Boolean" Nullable="false" />
+          <Property Name="IsOverNight" Type="Boolean" Nullable="false" />
+          <Property Name="IsNetto" Type="Boolean" Nullable="false" />
+          <Property Name="LastMinutes" Type="DateTime" Precision="3" />
+          <Property Name="WeekDays" Type="Byte" />
+          <Property Name="comission" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="category" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="lang" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="pckClass" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="exchangeRate" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="itin_id" Type="Int32" />
+          <Property Name="TourQuotId" Type="Int32" />
+          <Property Name="feedback_id" Type="Int32" />
+          <Property Name="isBClientOnly" Type="Boolean" Nullable="false" />
+          <Property Name="price_id" Type="Int32" />
+          <Property Name="dateUpd" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="usr" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -818,6 +924,59 @@ warning 6002: The table/view 'test_Odyssea.dbo.Pnr_rate' does not have a primary
                 <ScalarProperty Name="Pnrr_Id" ColumnName="Pnrr_Id" />
                 <ScalarProperty Name="PX_ID" ColumnName="PX_ID" />
                 <ScalarProperty Name="Pnr_pnr" ColumnName="Pnr_pnr" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PCK_Package">
+            <EntityTypeMapping TypeName="test_OdysseaModel.PCK_Package">
+              <MappingFragment StoreEntitySet="PCK_Package">
+                <ScalarProperty Name="usr" ColumnName="usr" />
+                <ScalarProperty Name="dateUpd" ColumnName="dateUpd" />
+                <ScalarProperty Name="price_id" ColumnName="price_id" />
+                <ScalarProperty Name="isBClientOnly" ColumnName="isBClientOnly" />
+                <ScalarProperty Name="feedback_id" ColumnName="feedback_id" />
+                <ScalarProperty Name="TourQuotId" ColumnName="TourQuotId" />
+                <ScalarProperty Name="itin_id" ColumnName="itin_id" />
+                <ScalarProperty Name="exchangeRate" ColumnName="exchangeRate" />
+                <ScalarProperty Name="pckClass" ColumnName="pckClass" />
+                <ScalarProperty Name="lang" ColumnName="lang" />
+                <ScalarProperty Name="category" ColumnName="category" />
+                <ScalarProperty Name="comission" ColumnName="comission" />
+                <ScalarProperty Name="WeekDays" ColumnName="WeekDays" />
+                <ScalarProperty Name="LastMinutes" ColumnName="LastMinutes" />
+                <ScalarProperty Name="IsNetto" ColumnName="IsNetto" />
+                <ScalarProperty Name="IsOverNight" ColumnName="IsOverNight" />
+                <ScalarProperty Name="IsMainInGroup" ColumnName="IsMainInGroup" />
+                <ScalarProperty Name="IsRestrictActive" ColumnName="IsRestrictActive" />
+                <ScalarProperty Name="IsDesktopView" ColumnName="IsDesktopView" />
+                <ScalarProperty Name="IsInternetView" ColumnName="IsInternetView" />
+                <ScalarProperty Name="IsTranslateCC" ColumnName="IsTranslateCC" />
+                <ScalarProperty Name="IsCar" ColumnName="IsCar" />
+                <ScalarProperty Name="IsHotel" ColumnName="IsHotel" />
+                <ScalarProperty Name="ext_code" ColumnName="ext_code" />
+                <ScalarProperty Name="subj_id" ColumnName="subj_id" />
+                <ScalarProperty Name="service" ColumnName="service" />
+                <ScalarProperty Name="supplier" ColumnName="supplier" />
+                <ScalarProperty Name="reference" ColumnName="reference" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="price_flt_only" ColumnName="price_flt_only" />
+                <ScalarProperty Name="rq_la" ColumnName="rq_la" />
+                <ScalarProperty Name="rq_flt" ColumnName="rq_flt" />
+                <ScalarProperty Name="mixed_regular_only" ColumnName="mixed_regular_only" />
+                <ScalarProperty Name="mixed_airline_only" ColumnName="mixed_airline_only" />
+                <ScalarProperty Name="minimum_px" ColumnName="minimum_px" />
+                <ScalarProperty Name="flt_duration_to" ColumnName="flt_duration_to" />
+                <ScalarProperty Name="flt_duration" ColumnName="flt_duration" />
+                <ScalarProperty Name="destination_2" ColumnName="destination_2" />
+                <ScalarProperty Name="destination_1" ColumnName="destination_1" />
+                <ScalarProperty Name="dest_from" ColumnName="dest_from" />
+                <ScalarProperty Name="cc" ColumnName="cc" />
+                <ScalarProperty Name="Room_Code_bas" ColumnName="Room_Code_bas" />
+                <ScalarProperty Name="Room_Type_bas" ColumnName="Room_Type_bas" />
+                <ScalarProperty Name="name_local" ColumnName="name_local" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="code" ColumnName="code" />
+                <ScalarProperty Name="PCK_ID" ColumnName="PCK_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Peleg.CalculatePnrNet;
+using Peleg.CalculatePnrNet.Data;
 using Peleg.CalculatePnrNet.Services;
 
 namespace TestCalculatePnrNet
@@ -33,17 +34,33 @@ namespace TestCalculatePnrNet
 
             try
             {
-                using (CalculateService calculateService = new CalculateService(uPanel.Connection.SqlConnectionString, pnrId))
+                using (var context = new PnrDbContext())
                 {
-                    decimal grossAmount = calculateService.CalculateGross();
-                    lblResult.Text = grossAmount.ToString(CultureInfo.InvariantCulture);
+                    var calculator = new CalculatePNR(context);
+                    decimal grossAmount = calculator.CalcGross(pnrId);
+                    decimal net = calculator.CalcNet(pnrId);
+
                     lblMessage.Text = $"Gross Amount: {grossAmount}";
                 }
+
+                //using (CalculateService calculateService = new CalculateService(uPanel.Connection.SqlConnectionString, pnrId))
+                //{
+                //    decimal grossAmount = calculateService.CalculateGross();
+                //    lblResult.Text = grossAmount.ToString(CultureInfo.InvariantCulture);
+                //    lblMessage.Text = $"Gross Amount: {grossAmount}";
+                //}
             }
-            catch (Exception ex)
+            catch (KeyNotFoundException)
             {
-                MessageBox.Show($"Error: {ex.Message}", "Calculation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                lblMessage.Text = $"Error: {ex.Message}";
+                MessageBox.Show("PNR not found. Please check the PNR ID and try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("Invalid PNR ID. Please enter a valid number.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("An unexpected error occurred.", "Critical Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

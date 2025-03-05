@@ -75,6 +75,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\PCK_Package.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DTO\GlobalParameters.cs" />
+    <Compile Include="Services\CalculatePNR.cs" />
+    <Compile Include="Services\CalculationService.cs" />
     <Compile Include="Data\global.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -106,9 +112,10 @@
     <Compile Include="Data\Pnr_rate.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
-    <Compile Include="Services\CalculateService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\GlobalParameterService.cs" />
+    <Compile Include="DTO\PnrData.cs" />
+    <Compile Include="Services\PnrService.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
