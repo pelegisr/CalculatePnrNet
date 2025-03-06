@@ -12,6 +12,8 @@ namespace Peleg.CalculatePnrNet.Data
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Core.Objects;
+    using System.Linq;
     
     public partial class PnrDbContext : DbContext
     {
@@ -25,11 +27,21 @@ namespace Peleg.CalculatePnrNet.Data
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<PNR> PNRs { get; set; }
         public virtual DbSet<global> globals { get; set; }
-        public virtual DbSet<Pnr_La> Pnr_La { get; set; }
-        public virtual DbSet<Pnr_Free> Pnr_Free { get; set; }
-        public virtual DbSet<Pnr_rate> Pnr_rate { get; set; }
+        public virtual DbSet<Internet_PNR_LOG> Internet_PNR_LOG { get; set; }
         public virtual DbSet<PCK_Package> PCK_Package { get; set; }
+        public virtual DbSet<PNR> PNRs { get; set; }
+        public virtual DbSet<Pnr_Free> Pnr_Free { get; set; }
+        public virtual DbSet<Pnr_La> Pnr_La { get; set; }
+        public virtual DbSet<Pnr_rate> Pnr_rate { get; set; }
+    
+        public virtual ObjectResult<Plg_GetFull_CDM_Data_Result> Plg_GetFull_CDM_Data(Nullable<int> pnr)
+        {
+            var pnrParameter = pnr.HasValue ?
+                new ObjectParameter("Pnr", pnr) :
+                new ObjectParameter("Pnr", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Plg_GetFull_CDM_Data_Result>("Plg_GetFull_CDM_Data", pnrParameter);
+        }
     }
 }

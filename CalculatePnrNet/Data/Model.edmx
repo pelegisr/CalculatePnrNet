@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="test_OdysseaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="Ent.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="global">
           <Key>
             <PropertyRef Name="name" />
@@ -19,6 +19,16 @@
           <Property Name="upd_clerk" Type="varchar" MaxLength="25" />
           <Property Name="upd_date" Type="datetime" Nullable="false" />
           <Property Name="is_public" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Internet_PNR_LOG">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Prm_Code" Type="varchar" MaxLength="150" />
+          <Property Name="Prm_Value" Type="varchar" MaxLength="8000" Nullable="false" />
+          <Property Name="XML_Value" Type="xml" />
+          <Property Name="dateUpd" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="PCK_Package">
           <Key>
@@ -316,8 +326,12 @@ warning 6002: The table/view 'test_Odyssea.dbo.Pnr_rate' does not have a primary
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="test_OdysseaModelStoreContainer">
+        <Function Name="Plg_GetFull_CDM_Data" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Pnr" Type="int" Mode="In" />
+        </Function>
+        <EntityContainer Name="EntStoreContainer">
           <EntitySet Name="global" EntityType="Self.global" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Internet_PNR_LOG" EntityType="Self.Internet_PNR_LOG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PCK_Package" EntityType="Self.PCK_Package" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PNR" EntityType="Self.PNR" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Pnr_Free" EntityType="Self.Pnr_Free" Schema="dbo" store:Type="Tables" />
@@ -372,7 +386,84 @@ warning 6002: The table/view 'test_Odyssea.dbo.Pnr_rate' does not have a primary
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="test_OdysseaModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="Ent" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="global">
+          <Key>
+            <PropertyRef Name="name" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="grp" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="n_value" Type="Decimal" Precision="12" Scale="4" />
+          <Property Name="c_value" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="d_value" Type="DateTime" Precision="3" />
+          <Property Name="comment" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="comment_local" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="upd_clerk" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="upd_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="is_public" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Internet_PNR_LOG">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Prm_Code" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="Prm_Value" Type="String" MaxLength="8000" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="XML_Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="dateUpd" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="PCK_Package">
+          <Key>
+            <PropertyRef Name="PCK_ID" />
+          </Key>
+          <Property Name="PCK_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="name_local" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Room_Type_bas" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Room_Code_bas" Type="String" MaxLength="3" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="cc" Type="String" MaxLength="3" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="dest_from" Type="String" MaxLength="3" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="destination_1" Type="String" MaxLength="3" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="destination_2" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="flt_duration" Type="Int16" Nullable="false" />
+          <Property Name="flt_duration_to" Type="Int16" />
+          <Property Name="minimum_px" Type="Int16" Nullable="false" />
+          <Property Name="mixed_airline_only" Type="Int16" Nullable="false" />
+          <Property Name="mixed_regular_only" Type="Int16" Nullable="false" />
+          <Property Name="rq_flt" Type="Int16" Nullable="false" />
+          <Property Name="rq_la" Type="Int16" Nullable="false" />
+          <Property Name="price_flt_only" Type="Int16" Nullable="false" />
+          <Property Name="status" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="reference" Type="Int32" />
+          <Property Name="supplier" Type="String" MaxLength="6" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="service" Type="String" MaxLength="3" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="subj_id" Type="Int32" />
+          <Property Name="ext_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="IsHotel" Type="Boolean" Nullable="false" />
+          <Property Name="IsCar" Type="Boolean" Nullable="false" />
+          <Property Name="IsTranslateCC" Type="Boolean" Nullable="false" />
+          <Property Name="IsInternetView" Type="Boolean" Nullable="false" />
+          <Property Name="IsDesktopView" Type="Boolean" Nullable="false" />
+          <Property Name="IsRestrictActive" Type="Boolean" Nullable="false" />
+          <Property Name="IsMainInGroup" Type="Boolean" Nullable="false" />
+          <Property Name="IsOverNight" Type="Boolean" Nullable="false" />
+          <Property Name="IsNetto" Type="Boolean" Nullable="false" />
+          <Property Name="LastMinutes" Type="DateTime" Precision="3" />
+          <Property Name="WeekDays" Type="Byte" />
+          <Property Name="comission" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="category" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="lang" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="pckClass" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="exchangeRate" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="itin_id" Type="Int32" />
+          <Property Name="TourQuotId" Type="Int32" />
+          <Property Name="feedback_id" Type="Int32" />
+          <Property Name="isBClientOnly" Type="Boolean" Nullable="false" />
+          <Property Name="price_id" Type="Int32" />
+          <Property Name="dateUpd" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="usr" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+        </EntityType>
         <EntityType Name="PNR">
           <Key>
             <PropertyRef Name="pnr_Pnr" />
@@ -423,90 +514,9 @@ warning 6002: The table/view 'test_Odyssea.dbo.Pnr_rate' does not have a primary
           <Property Name="Pck_FirstDate" Type="DateTime" Precision="3" />
           <Property Name="ESource" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
           <Property Name="employer_id" Type="Int32" />
-          <NavigationProperty Name="Pnr_La" Relationship="test_OdysseaModel.FK_Pnr_La_Pnr" FromRole="PNR" ToRole="Pnr_La" />
-          <NavigationProperty Name="Pnr_rate" Relationship="test_OdysseaModel.FK_Pnr_rate_Pnr" FromRole="PNR" ToRole="Pnr_rate" />
+          <NavigationProperty Name="Pnr_La" Relationship="Self.FK_Pnr_La_Pnr" FromRole="PNR" ToRole="Pnr_La" />
+          <NavigationProperty Name="Pnr_rate" Relationship="Self.FK_Pnr_rate_Pnr" FromRole="PNR" ToRole="Pnr_rate" />
         </EntityType>
-        <EntityContainer Name="PnrDbContext" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="PNRs" EntityType="Self.PNR" />
-          <EntitySet Name="globals" EntityType="test_OdysseaModel.global" />
-          <EntitySet Name="Pnr_La" EntityType="test_OdysseaModel.Pnr_La" />
-          <AssociationSet Name="FK_Pnr_La_Pnr" Association="test_OdysseaModel.FK_Pnr_La_Pnr">
-            <End Role="PNR" EntitySet="PNRs" />
-            <End Role="Pnr_La" EntitySet="Pnr_La" />
-          </AssociationSet>
-          <EntitySet Name="Pnr_Free" EntityType="test_OdysseaModel.Pnr_Free" />
-          <EntitySet Name="Pnr_rate" EntityType="test_OdysseaModel.Pnr_rate" />
-          <AssociationSet Name="FK_Pnr_rate_Pnr" Association="test_OdysseaModel.FK_Pnr_rate_Pnr">
-            <End Role="PNR" EntitySet="PNRs" />
-            <End Role="Pnr_rate" EntitySet="Pnr_rate" />
-          </AssociationSet>
-          <EntitySet Name="PCK_Package" EntityType="test_OdysseaModel.PCK_Package" />
-        </EntityContainer>
-        <EntityType Name="global">
-          <Key>
-            <PropertyRef Name="name" />
-          </Key>
-          <Property Name="name" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="grp" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="n_value" Type="Decimal" Precision="12" Scale="4" />
-          <Property Name="c_value" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="d_value" Type="DateTime" Precision="3" />
-          <Property Name="comment" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="comment_local" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
-          <Property Name="upd_clerk" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
-          <Property Name="upd_date" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="is_public" Type="Boolean" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Pnr_La">
-          <Key>
-            <PropertyRef Name="pnr_Pnr" />
-            <PropertyRef Name="pla_line" />
-          </Key>
-          <Property Name="pnr_Pnr" Type="Int32" Nullable="false" />
-          <Property Name="LA_ID" Type="Int32" Nullable="false" />
-          <Property Name="pla_line" Type="Int16" Nullable="false" />
-          <Property Name="La_Supplier" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="false" />
-          <Property Name="pla_Room_class_RQ" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Name="pla_Room_class_RCV" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Name="pla_Room_type" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Name="pla_Date_from" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="pla_Date_To" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="pla_cots" Type="Int32" />
-          <Property Name="pla_ExtraBad" Type="Int32" />
-          <Property Name="pla_Meals" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="pla_Room_Amount" Type="Int16" Nullable="false" />
-          <Property Name="pla_Status" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
-          <Property Name="pla_Remark" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
-          <Property Name="pla_RefNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="pla_RefClerk" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
-          <Property Name="pla_LinkFrom" Type="Byte" />
-          <Property Name="msg_id" Type="Int32" />
-          <Property Name="pck_id" Type="Int32" />
-          <Property Name="pla_Pointer" Type="Int32" />
-          <Property Name="Pla_Voucher" Type="String" MaxLength="9" FixedLength="false" Unicode="false" />
-          <Property Name="Pla_Voucher_Clerk" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
-          <Property Name="Pla_Voucher_Date" Type="DateTime" Precision="3" />
-          <Property Name="pla_DateUpd" Type="DateTime" Precision="3" />
-          <Property Name="pla_User" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
-          <Property Name="GNR_Description" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="Meal_Description" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
-          <Property Name="Category" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
-          <Property Name="pla_Voucher_Remark" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Esource" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="PNR" Relationship="test_OdysseaModel.FK_Pnr_La_Pnr" FromRole="Pnr_La" ToRole="PNR" />
-        </EntityType>
-        <Association Name="FK_Pnr_La_Pnr">
-          <End Type="test_OdysseaModel.PNR" Role="PNR" Multiplicity="1" />
-          <End Type="test_OdysseaModel.Pnr_La" Role="Pnr_La" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PNR">
-              <PropertyRef Name="pnr_Pnr" />
-            </Principal>
-            <Dependent Role="Pnr_La">
-              <PropertyRef Name="pnr_Pnr" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="Pnr_Free">
           <Key>
             <PropertyRef Name="Pnr_Pnr" />
@@ -516,9 +526,9 @@ warning 6002: The table/view 'test_Odyssea.dbo.Pnr_rate' does not have a primary
           <Property Name="Line" Type="Int16" Nullable="false" />
           <Property Name="Department" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="FromInternet" Type="Boolean" />
-          <Property Name="Service" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
-          <Property Name="Type" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
-          <Property Name="Supplier" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="false" />
+          <Property Name="Service" Type="String" MaxLength="3" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Type" Type="String" MaxLength="3" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Supplier" Type="String" MaxLength="4" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Supplier_Paid" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
           <Property Name="Confirm_By" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Referens" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
@@ -526,8 +536,8 @@ warning 6002: The table/view 'test_Odyssea.dbo.Pnr_rate' does not have a primary
           <Property Name="BasisFare" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="DateLimit" Type="DateTime" Precision="3" />
           <Property Name="CancelPRC" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
-          <Property Name="FDest" Type="String" Nullable="false" MaxLength="3" FixedLength="true" Unicode="false" />
-          <Property Name="FDest_Name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="FDest" Type="String" MaxLength="3" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="FDest_Name" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="FDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="FHour" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="TDest" Type="String" MaxLength="3" FixedLength="true" Unicode="false" />
@@ -535,8 +545,8 @@ warning 6002: The table/view 'test_Odyssea.dbo.Pnr_rate' does not have a primary
           <Property Name="Tdate" Type="DateTime" Precision="3" />
           <Property Name="THour" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="PAX" Type="Int16" Nullable="false" />
-          <Property Name="Status" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
-          <Property Name="cc" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="String" MaxLength="3" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="cc" Type="String" MaxLength="3" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Remark" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
           <Property Name="Voucher_Remark" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
           <Property Name="Voucher_Number" Type="Int32" />
@@ -575,11 +585,49 @@ warning 6002: The table/view 'test_Odyssea.dbo.Pnr_rate' does not have a primary
           <Property Name="Train_Class" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="Train_Ticket" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
           <Property Name="DateUpd" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="UserUpd" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="UserUpd" Type="String" MaxLength="25" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="ATC" Type="Boolean" />
           <Property Name="ESource" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
           <Property Name="Airfile_RecordDateCreate" Type="DateTime" Precision="3" />
           <Property Name="Airfile_FltLine" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Pnr_La">
+          <Key>
+            <PropertyRef Name="pnr_Pnr" />
+            <PropertyRef Name="pla_line" />
+          </Key>
+          <Property Name="pnr_Pnr" Type="Int32" Nullable="false" />
+          <Property Name="LA_ID" Type="Int32" Nullable="false" />
+          <Property Name="pla_line" Type="Int16" Nullable="false" />
+          <Property Name="La_Supplier" Type="String" MaxLength="4" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="pla_Room_class_RQ" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="pla_Room_class_RCV" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="pla_Room_type" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="pla_Date_from" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="pla_Date_To" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="pla_cots" Type="Int32" />
+          <Property Name="pla_ExtraBad" Type="Int32" />
+          <Property Name="pla_Meals" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="pla_Room_Amount" Type="Int16" Nullable="false" />
+          <Property Name="pla_Status" Type="String" MaxLength="3" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="pla_Remark" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="pla_RefNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="pla_RefClerk" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="pla_LinkFrom" Type="Byte" />
+          <Property Name="msg_id" Type="Int32" />
+          <Property Name="pck_id" Type="Int32" />
+          <Property Name="pla_Pointer" Type="Int32" />
+          <Property Name="Pla_Voucher" Type="String" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="Pla_Voucher_Clerk" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="Pla_Voucher_Date" Type="DateTime" Precision="3" />
+          <Property Name="pla_DateUpd" Type="DateTime" Precision="3" />
+          <Property Name="pla_User" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="GNR_Description" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="Meal_Description" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="Category" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="pla_Voucher_Remark" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Esource" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="PNR" Relationship="Self.FK_Pnr_La_Pnr" FromRole="Pnr_La" ToRole="PNR" />
         </EntityType>
         <EntityType Name="Pnr_rate">
           <Key>
@@ -603,23 +651,23 @@ warning 6002: The table/view 'test_Odyssea.dbo.Pnr_rate' does not have a primary
             <PropertyRef Name="Pnrr_DateUpd" />
           </Key>
           <Property Name="Pnr_pnr" Type="Int32" Nullable="false" />
-          <Property Name="PX_ID" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="PX_ID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Pnrr_Id" Type="Int32" Nullable="false" />
-          <Property Name="Pnrr_Supp" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="false" />
-          <Property Name="Pnrr_service" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="false" />
-          <Property Name="Pnrr_Flight" Type="String" Nullable="false" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="Pnrr_Supp" Type="String" MaxLength="4" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Pnrr_service" Type="String" MaxLength="4" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Pnrr_Flight" Type="String" MaxLength="7" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Pnrr_Line" Type="Int16" Nullable="false" />
-          <Property Name="Pnrr_Rate_Type" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="Pnrr_Rate_Type" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
           <Property Name="Pnrr_Rate_Code" Type="Int16" Nullable="false" />
           <Property Name="Pnrr_Rate_PLG" Type="Int16" Nullable="false" />
           <Property Name="Pnrr_PriceList" Type="Int32" Nullable="false" />
-          <Property Name="Pnrr_CurrBrutto" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
-          <Property Name="Pnrr_CurrNeto" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
-          <Property Name="Pnrr_Rate_brutto" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
-          <Property Name="Pnrr_Rate_neto" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
-          <Property Name="Pnrr_Rate_Detail" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="Pnrr_CurrBrutto" Type="String" MaxLength="3" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Pnrr_CurrNeto" Type="String" MaxLength="3" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Pnrr_Rate_brutto" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="Pnrr_Rate_neto" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="Pnrr_Rate_Detail" Type="String" MaxLength="150" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Pnrr_Price_Include" Type="Boolean" />
-          <Property Name="Pnrr_vat" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="Pnrr_vat" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
           <Property Name="Pnrr_Invoice" Type="Decimal" Precision="18" Scale="0" />
           <Property Name="Pnrr_Inv_Supplier" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
           <Property Name="Pnrr_Comm_Group" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
@@ -636,11 +684,23 @@ warning 6002: The table/view 'test_Odyssea.dbo.Pnr_rate' does not have a primary
           <Property Name="VAT_Cms" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="VAT_Purch" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="Without_Vat" Type="Boolean" />
-          <NavigationProperty Name="PNR" Relationship="test_OdysseaModel.FK_Pnr_rate_Pnr" FromRole="Pnr_rate" ToRole="PNR" />
+          <NavigationProperty Name="PNR" Relationship="Self.FK_Pnr_rate_Pnr" FromRole="Pnr_rate" ToRole="PNR" />
         </EntityType>
+        <Association Name="FK_Pnr_La_Pnr">
+          <End Role="PNR" Type="Self.PNR" Multiplicity="1" />
+          <End Role="Pnr_La" Type="Self.Pnr_La" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PNR">
+              <PropertyRef Name="pnr_Pnr" />
+            </Principal>
+            <Dependent Role="Pnr_La">
+              <PropertyRef Name="pnr_Pnr" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Pnr_rate_Pnr">
-          <End Type="test_OdysseaModel.PNR" Role="PNR" Multiplicity="1" />
-          <End Type="test_OdysseaModel.Pnr_rate" Role="Pnr_rate" Multiplicity="*" />
+          <End Role="PNR" Type="Self.PNR" Multiplicity="1" />
+          <End Role="Pnr_rate" Type="Self.Pnr_rate" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="PNR">
               <PropertyRef Name="pnr_Pnr" />
@@ -650,66 +710,128 @@ warning 6002: The table/view 'test_Odyssea.dbo.Pnr_rate' does not have a primary
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="PCK_Package">
-          <Key>
-            <PropertyRef Name="PCK_ID" />
-          </Key>
-          <Property Name="PCK_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="code" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="name_local" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Room_Type_bas" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="Room_Code_bas" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
-          <Property Name="cc" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
-          <Property Name="dest_from" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
-          <Property Name="destination_1" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
-          <Property Name="destination_2" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
-          <Property Name="flt_duration" Type="Int16" Nullable="false" />
-          <Property Name="flt_duration_to" Type="Int16" />
-          <Property Name="minimum_px" Type="Int16" Nullable="false" />
-          <Property Name="mixed_airline_only" Type="Int16" Nullable="false" />
-          <Property Name="mixed_regular_only" Type="Int16" Nullable="false" />
-          <Property Name="rq_flt" Type="Int16" Nullable="false" />
-          <Property Name="rq_la" Type="Int16" Nullable="false" />
-          <Property Name="price_flt_only" Type="Int16" Nullable="false" />
-          <Property Name="status" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="reference" Type="Int32" />
-          <Property Name="supplier" Type="String" Nullable="false" MaxLength="6" FixedLength="false" Unicode="false" />
-          <Property Name="service" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
-          <Property Name="subj_id" Type="Int32" />
-          <Property Name="ext_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="IsHotel" Type="Boolean" Nullable="false" />
-          <Property Name="IsCar" Type="Boolean" Nullable="false" />
-          <Property Name="IsTranslateCC" Type="Boolean" Nullable="false" />
-          <Property Name="IsInternetView" Type="Boolean" Nullable="false" />
-          <Property Name="IsDesktopView" Type="Boolean" Nullable="false" />
-          <Property Name="IsRestrictActive" Type="Boolean" Nullable="false" />
-          <Property Name="IsMainInGroup" Type="Boolean" Nullable="false" />
-          <Property Name="IsOverNight" Type="Boolean" Nullable="false" />
-          <Property Name="IsNetto" Type="Boolean" Nullable="false" />
-          <Property Name="LastMinutes" Type="DateTime" Precision="3" />
-          <Property Name="WeekDays" Type="Byte" />
-          <Property Name="comission" Type="Decimal" Precision="5" Scale="2" />
-          <Property Name="category" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
-          <Property Name="lang" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
-          <Property Name="pckClass" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
-          <Property Name="exchangeRate" Type="Decimal" Precision="5" Scale="2" />
-          <Property Name="itin_id" Type="Int32" />
-          <Property Name="TourQuotId" Type="Int32" />
-          <Property Name="feedback_id" Type="Int32" />
-          <Property Name="isBClientOnly" Type="Boolean" Nullable="false" />
-          <Property Name="price_id" Type="Int32" />
-          <Property Name="dateUpd" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="usr" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
-        </EntityType>
+        <EntityContainer Name="PnrDbContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="globals" EntityType="Self.global" />
+          <EntitySet Name="Internet_PNR_LOG" EntityType="Self.Internet_PNR_LOG" />
+          <EntitySet Name="PCK_Package" EntityType="Self.PCK_Package" />
+          <EntitySet Name="PNRs" EntityType="Self.PNR" />
+          <EntitySet Name="Pnr_Free" EntityType="Self.Pnr_Free" />
+          <EntitySet Name="Pnr_La" EntityType="Self.Pnr_La" />
+          <EntitySet Name="Pnr_rate" EntityType="Self.Pnr_rate" />
+          <AssociationSet Name="FK_Pnr_La_Pnr" Association="Self.FK_Pnr_La_Pnr">
+            <End Role="PNR" EntitySet="PNRs" />
+            <End Role="Pnr_La" EntitySet="Pnr_La" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Pnr_rate_Pnr" Association="Self.FK_Pnr_rate_Pnr">
+            <End Role="PNR" EntitySet="PNRs" />
+            <End Role="Pnr_rate" EntitySet="Pnr_rate" />
+          </AssociationSet>
+          <FunctionImport Name="Plg_GetFull_CDM_Data" ReturnType="Collection(Ent.Plg_GetFull_CDM_Data_Result)">
+            <Parameter Name="Pnr" Mode="In" Type="Int32" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="Plg_GetFull_CDM_Data_Result">
+          <Property Type="String" Name="PX_ID" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="prod" Nullable="true" MaxLength="3" />
+          <Property Type="String" Name="prod_code" Nullable="true" MaxLength="3" />
+          <Property Type="Int32" Name="prod_id" Nullable="true" />
+          <Property Type="Int32" Name="prod_id2" Nullable="true" />
+          <Property Type="String" Name="Comm_Category" Nullable="true" MaxLength="5" />
+          <Property Type="Decimal" Name="Comm_Norm" Nullable="true" Precision="5" Scale="2" />
+          <Property Type="Decimal" Name="Comm_Spec" Nullable="true" Precision="5" Scale="2" />
+          <Property Type="String" Name="prc_amnt" Nullable="true" MaxLength="1" />
+          <Property Type="String" Name="incl_tax" Nullable="true" MaxLength="1" />
+          <Property Type="String" Name="incl_reg" Nullable="true" MaxLength="1" />
+          <Property Type="String" Name="CDM_Type" Nullable="true" MaxLength="1" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="test_OdysseaModelStoreContainer" CdmEntityContainer="PnrDbContext">
+        <EntityContainerMapping StorageEntityContainer="EntStoreContainer" CdmEntityContainer="PnrDbContext">
+          <EntitySetMapping Name="globals">
+            <EntityTypeMapping TypeName="Ent.global">
+              <MappingFragment StoreEntitySet="global">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="grp" ColumnName="grp" />
+                <ScalarProperty Name="n_value" ColumnName="n_value" />
+                <ScalarProperty Name="c_value" ColumnName="c_value" />
+                <ScalarProperty Name="d_value" ColumnName="d_value" />
+                <ScalarProperty Name="comment" ColumnName="comment" />
+                <ScalarProperty Name="comment_local" ColumnName="comment_local" />
+                <ScalarProperty Name="upd_clerk" ColumnName="upd_clerk" />
+                <ScalarProperty Name="upd_date" ColumnName="upd_date" />
+                <ScalarProperty Name="is_public" ColumnName="is_public" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Internet_PNR_LOG">
+            <EntityTypeMapping TypeName="Ent.Internet_PNR_LOG">
+              <MappingFragment StoreEntitySet="Internet_PNR_LOG">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Prm_Code" ColumnName="Prm_Code" />
+                <ScalarProperty Name="Prm_Value" ColumnName="Prm_Value" />
+                <ScalarProperty Name="XML_Value" ColumnName="XML_Value" />
+                <ScalarProperty Name="dateUpd" ColumnName="dateUpd" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PCK_Package">
+            <EntityTypeMapping TypeName="Ent.PCK_Package">
+              <MappingFragment StoreEntitySet="PCK_Package">
+                <ScalarProperty Name="PCK_ID" ColumnName="PCK_ID" />
+                <ScalarProperty Name="code" ColumnName="code" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="name_local" ColumnName="name_local" />
+                <ScalarProperty Name="Room_Type_bas" ColumnName="Room_Type_bas" />
+                <ScalarProperty Name="Room_Code_bas" ColumnName="Room_Code_bas" />
+                <ScalarProperty Name="cc" ColumnName="cc" />
+                <ScalarProperty Name="dest_from" ColumnName="dest_from" />
+                <ScalarProperty Name="destination_1" ColumnName="destination_1" />
+                <ScalarProperty Name="destination_2" ColumnName="destination_2" />
+                <ScalarProperty Name="flt_duration" ColumnName="flt_duration" />
+                <ScalarProperty Name="flt_duration_to" ColumnName="flt_duration_to" />
+                <ScalarProperty Name="minimum_px" ColumnName="minimum_px" />
+                <ScalarProperty Name="mixed_airline_only" ColumnName="mixed_airline_only" />
+                <ScalarProperty Name="mixed_regular_only" ColumnName="mixed_regular_only" />
+                <ScalarProperty Name="rq_flt" ColumnName="rq_flt" />
+                <ScalarProperty Name="rq_la" ColumnName="rq_la" />
+                <ScalarProperty Name="price_flt_only" ColumnName="price_flt_only" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="reference" ColumnName="reference" />
+                <ScalarProperty Name="supplier" ColumnName="supplier" />
+                <ScalarProperty Name="service" ColumnName="service" />
+                <ScalarProperty Name="subj_id" ColumnName="subj_id" />
+                <ScalarProperty Name="ext_code" ColumnName="ext_code" />
+                <ScalarProperty Name="IsHotel" ColumnName="IsHotel" />
+                <ScalarProperty Name="IsCar" ColumnName="IsCar" />
+                <ScalarProperty Name="IsTranslateCC" ColumnName="IsTranslateCC" />
+                <ScalarProperty Name="IsInternetView" ColumnName="IsInternetView" />
+                <ScalarProperty Name="IsDesktopView" ColumnName="IsDesktopView" />
+                <ScalarProperty Name="IsRestrictActive" ColumnName="IsRestrictActive" />
+                <ScalarProperty Name="IsMainInGroup" ColumnName="IsMainInGroup" />
+                <ScalarProperty Name="IsOverNight" ColumnName="IsOverNight" />
+                <ScalarProperty Name="IsNetto" ColumnName="IsNetto" />
+                <ScalarProperty Name="LastMinutes" ColumnName="LastMinutes" />
+                <ScalarProperty Name="WeekDays" ColumnName="WeekDays" />
+                <ScalarProperty Name="comission" ColumnName="comission" />
+                <ScalarProperty Name="category" ColumnName="category" />
+                <ScalarProperty Name="lang" ColumnName="lang" />
+                <ScalarProperty Name="pckClass" ColumnName="pckClass" />
+                <ScalarProperty Name="exchangeRate" ColumnName="exchangeRate" />
+                <ScalarProperty Name="itin_id" ColumnName="itin_id" />
+                <ScalarProperty Name="TourQuotId" ColumnName="TourQuotId" />
+                <ScalarProperty Name="feedback_id" ColumnName="feedback_id" />
+                <ScalarProperty Name="isBClientOnly" ColumnName="isBClientOnly" />
+                <ScalarProperty Name="price_id" ColumnName="price_id" />
+                <ScalarProperty Name="dateUpd" ColumnName="dateUpd" />
+                <ScalarProperty Name="usr" ColumnName="usr" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="PNRs">
-            <EntityTypeMapping TypeName="test_OdysseaModel.PNR">
+            <EntityTypeMapping TypeName="Ent.PNR">
               <MappingFragment StoreEntitySet="PNR">
                 <ScalarProperty Name="pnr_Pnr" ColumnName="pnr_Pnr" />
                 <ScalarProperty Name="cmp_Code" ColumnName="cmp_Code" />
@@ -760,226 +882,175 @@ warning 6002: The table/view 'test_Odyssea.dbo.Pnr_rate' does not have a primary
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="globals">
-            <EntityTypeMapping TypeName="test_OdysseaModel.global">
-              <MappingFragment StoreEntitySet="global">
-                <ScalarProperty Name="is_public" ColumnName="is_public" />
-                <ScalarProperty Name="upd_date" ColumnName="upd_date" />
-                <ScalarProperty Name="upd_clerk" ColumnName="upd_clerk" />
-                <ScalarProperty Name="comment_local" ColumnName="comment_local" />
-                <ScalarProperty Name="comment" ColumnName="comment" />
-                <ScalarProperty Name="d_value" ColumnName="d_value" />
-                <ScalarProperty Name="c_value" ColumnName="c_value" />
-                <ScalarProperty Name="n_value" ColumnName="n_value" />
-                <ScalarProperty Name="grp" ColumnName="grp" />
-                <ScalarProperty Name="name" ColumnName="name" />
+          <EntitySetMapping Name="Pnr_Free">
+            <EntityTypeMapping TypeName="Ent.Pnr_Free">
+              <MappingFragment StoreEntitySet="Pnr_Free">
+                <ScalarProperty Name="Pnr_Pnr" ColumnName="Pnr_Pnr" />
+                <ScalarProperty Name="Line" ColumnName="Line" />
+                <ScalarProperty Name="Department" ColumnName="Department" />
+                <ScalarProperty Name="FromInternet" ColumnName="FromInternet" />
+                <ScalarProperty Name="Service" ColumnName="Service" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Supplier" ColumnName="Supplier" />
+                <ScalarProperty Name="Supplier_Paid" ColumnName="Supplier_Paid" />
+                <ScalarProperty Name="Confirm_By" ColumnName="Confirm_By" />
+                <ScalarProperty Name="Referens" ColumnName="Referens" />
+                <ScalarProperty Name="Reference2" ColumnName="Reference2" />
+                <ScalarProperty Name="BasisFare" ColumnName="BasisFare" />
+                <ScalarProperty Name="DateLimit" ColumnName="DateLimit" />
+                <ScalarProperty Name="CancelPRC" ColumnName="CancelPRC" />
+                <ScalarProperty Name="FDest" ColumnName="FDest" />
+                <ScalarProperty Name="FDest_Name" ColumnName="FDest_Name" />
+                <ScalarProperty Name="FDate" ColumnName="FDate" />
+                <ScalarProperty Name="FHour" ColumnName="FHour" />
+                <ScalarProperty Name="TDest" ColumnName="TDest" />
+                <ScalarProperty Name="TDest_Name" ColumnName="TDest_Name" />
+                <ScalarProperty Name="Tdate" ColumnName="Tdate" />
+                <ScalarProperty Name="THour" ColumnName="THour" />
+                <ScalarProperty Name="PAX" ColumnName="PAX" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="cc" ColumnName="cc" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="Voucher_Remark" ColumnName="Voucher_Remark" />
+                <ScalarProperty Name="Voucher_Number" ColumnName="Voucher_Number" />
+                <ScalarProperty Name="Flt_Open" ColumnName="Flt_Open" />
+                <ScalarProperty Name="Flt_Carrier" ColumnName="Flt_Carrier" />
+                <ScalarProperty Name="Flt_CrrNum" ColumnName="Flt_CrrNum" />
+                <ScalarProperty Name="Flt_FAirp" ColumnName="Flt_FAirp" />
+                <ScalarProperty Name="Flt_FAirp_Name" ColumnName="Flt_FAirp_Name" />
+                <ScalarProperty Name="Flt_FromTerminal" ColumnName="Flt_FromTerminal" />
+                <ScalarProperty Name="Flt_TAirp" ColumnName="Flt_TAirp" />
+                <ScalarProperty Name="Flt_TAirp_Name" ColumnName="Flt_TAirp_Name" />
+                <ScalarProperty Name="Flt_ToTerminal" ColumnName="Flt_ToTerminal" />
+                <ScalarProperty Name="Flt_Class" ColumnName="Flt_Class" />
+                <ScalarProperty Name="Car_Type" ColumnName="Car_Type" />
+                <ScalarProperty Name="Car_Type_Name" ColumnName="Car_Type_Name" />
+                <ScalarProperty Name="Car_Rent_Company" ColumnName="Car_Rent_Company" />
+                <ScalarProperty Name="Car_Acount" ColumnName="Car_Acount" />
+                <ScalarProperty Name="Car_PickUp_Station" ColumnName="Car_PickUp_Station" />
+                <ScalarProperty Name="Car_Drop_Station" ColumnName="Car_Drop_Station" />
+                <ScalarProperty Name="Htl_Code" ColumnName="Htl_Code" />
+                <ScalarProperty Name="Htl_Name" ColumnName="Htl_Name" />
+                <ScalarProperty Name="Htl_Description" ColumnName="Htl_Description" />
+                <ScalarProperty Name="Htl_Type" ColumnName="Htl_Type" />
+                <ScalarProperty Name="Htl_Room_Class" ColumnName="Htl_Room_Class" />
+                <ScalarProperty Name="Htl_RoomType" ColumnName="Htl_RoomType" />
+                <ScalarProperty Name="Htl_RoomAcount" ColumnName="Htl_RoomAcount" />
+                <ScalarProperty Name="Htl_Meals" ColumnName="Htl_Meals" />
+                <ScalarProperty Name="Train_Station_Code" ColumnName="Train_Station_Code" />
+                <ScalarProperty Name="Train_Station_Name" ColumnName="Train_Station_Name" />
+                <ScalarProperty Name="Train_Station_To_Code" ColumnName="Train_Station_To_Code" />
+                <ScalarProperty Name="Train_Station_To_Name" ColumnName="Train_Station_To_Name" />
+                <ScalarProperty Name="Train_Num" ColumnName="Train_Num" />
+                <ScalarProperty Name="Train_Smoking" ColumnName="Train_Smoking" />
+                <ScalarProperty Name="Train_Vagon" ColumnName="Train_Vagon" />
+                <ScalarProperty Name="Train_Site" ColumnName="Train_Site" />
+                <ScalarProperty Name="Train_Class" ColumnName="Train_Class" />
+                <ScalarProperty Name="Train_Ticket" ColumnName="Train_Ticket" />
+                <ScalarProperty Name="DateUpd" ColumnName="DateUpd" />
+                <ScalarProperty Name="UserUpd" ColumnName="UserUpd" />
+                <ScalarProperty Name="ATC" ColumnName="ATC" />
+                <ScalarProperty Name="ESource" ColumnName="ESource" />
+                <ScalarProperty Name="Airfile_RecordDateCreate" ColumnName="Airfile_RecordDateCreate" />
+                <ScalarProperty Name="Airfile_FltLine" ColumnName="Airfile_FltLine" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Pnr_La">
-            <EntityTypeMapping TypeName="test_OdysseaModel.Pnr_La">
+            <EntityTypeMapping TypeName="Ent.Pnr_La">
               <MappingFragment StoreEntitySet="Pnr_La">
-                <ScalarProperty Name="Esource" ColumnName="Esource" />
-                <ScalarProperty Name="pla_Voucher_Remark" ColumnName="pla_Voucher_Remark" />
-                <ScalarProperty Name="Category" ColumnName="Category" />
-                <ScalarProperty Name="Meal_Description" ColumnName="Meal_Description" />
-                <ScalarProperty Name="GNR_Description" ColumnName="GNR_Description" />
-                <ScalarProperty Name="pla_User" ColumnName="pla_User" />
-                <ScalarProperty Name="pla_DateUpd" ColumnName="pla_DateUpd" />
-                <ScalarProperty Name="Pla_Voucher_Date" ColumnName="Pla_Voucher_Date" />
-                <ScalarProperty Name="Pla_Voucher_Clerk" ColumnName="Pla_Voucher_Clerk" />
-                <ScalarProperty Name="Pla_Voucher" ColumnName="Pla_Voucher" />
-                <ScalarProperty Name="pla_Pointer" ColumnName="pla_Pointer" />
-                <ScalarProperty Name="pck_id" ColumnName="pck_id" />
-                <ScalarProperty Name="msg_id" ColumnName="msg_id" />
-                <ScalarProperty Name="pla_LinkFrom" ColumnName="pla_LinkFrom" />
-                <ScalarProperty Name="pla_RefClerk" ColumnName="pla_RefClerk" />
-                <ScalarProperty Name="pla_RefNumber" ColumnName="pla_RefNumber" />
-                <ScalarProperty Name="pla_Remark" ColumnName="pla_Remark" />
-                <ScalarProperty Name="pla_Status" ColumnName="pla_Status" />
-                <ScalarProperty Name="pla_Room_Amount" ColumnName="pla_Room_Amount" />
-                <ScalarProperty Name="pla_Meals" ColumnName="pla_Meals" />
-                <ScalarProperty Name="pla_ExtraBad" ColumnName="pla_ExtraBad" />
-                <ScalarProperty Name="pla_cots" ColumnName="pla_cots" />
-                <ScalarProperty Name="pla_Date_To" ColumnName="pla_Date_To" />
-                <ScalarProperty Name="pla_Date_from" ColumnName="pla_Date_from" />
-                <ScalarProperty Name="pla_Room_type" ColumnName="pla_Room_type" />
-                <ScalarProperty Name="pla_Room_class_RCV" ColumnName="pla_Room_class_RCV" />
-                <ScalarProperty Name="pla_Room_class_RQ" ColumnName="pla_Room_class_RQ" />
-                <ScalarProperty Name="La_Supplier" ColumnName="La_Supplier" />
-                <ScalarProperty Name="pla_line" ColumnName="pla_line" />
-                <ScalarProperty Name="LA_ID" ColumnName="LA_ID" />
                 <ScalarProperty Name="pnr_Pnr" ColumnName="pnr_Pnr" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Pnr_Free">
-            <EntityTypeMapping TypeName="test_OdysseaModel.Pnr_Free">
-              <MappingFragment StoreEntitySet="Pnr_Free">
-                <ScalarProperty Name="Airfile_FltLine" ColumnName="Airfile_FltLine" />
-                <ScalarProperty Name="Airfile_RecordDateCreate" ColumnName="Airfile_RecordDateCreate" />
-                <ScalarProperty Name="ESource" ColumnName="ESource" />
-                <ScalarProperty Name="ATC" ColumnName="ATC" />
-                <ScalarProperty Name="UserUpd" ColumnName="UserUpd" />
-                <ScalarProperty Name="DateUpd" ColumnName="DateUpd" />
-                <ScalarProperty Name="Train_Ticket" ColumnName="Train_Ticket" />
-                <ScalarProperty Name="Train_Class" ColumnName="Train_Class" />
-                <ScalarProperty Name="Train_Site" ColumnName="Train_Site" />
-                <ScalarProperty Name="Train_Vagon" ColumnName="Train_Vagon" />
-                <ScalarProperty Name="Train_Smoking" ColumnName="Train_Smoking" />
-                <ScalarProperty Name="Train_Num" ColumnName="Train_Num" />
-                <ScalarProperty Name="Train_Station_To_Name" ColumnName="Train_Station_To_Name" />
-                <ScalarProperty Name="Train_Station_To_Code" ColumnName="Train_Station_To_Code" />
-                <ScalarProperty Name="Train_Station_Name" ColumnName="Train_Station_Name" />
-                <ScalarProperty Name="Train_Station_Code" ColumnName="Train_Station_Code" />
-                <ScalarProperty Name="Htl_Meals" ColumnName="Htl_Meals" />
-                <ScalarProperty Name="Htl_RoomAcount" ColumnName="Htl_RoomAcount" />
-                <ScalarProperty Name="Htl_RoomType" ColumnName="Htl_RoomType" />
-                <ScalarProperty Name="Htl_Room_Class" ColumnName="Htl_Room_Class" />
-                <ScalarProperty Name="Htl_Type" ColumnName="Htl_Type" />
-                <ScalarProperty Name="Htl_Description" ColumnName="Htl_Description" />
-                <ScalarProperty Name="Htl_Name" ColumnName="Htl_Name" />
-                <ScalarProperty Name="Htl_Code" ColumnName="Htl_Code" />
-                <ScalarProperty Name="Car_Drop_Station" ColumnName="Car_Drop_Station" />
-                <ScalarProperty Name="Car_PickUp_Station" ColumnName="Car_PickUp_Station" />
-                <ScalarProperty Name="Car_Acount" ColumnName="Car_Acount" />
-                <ScalarProperty Name="Car_Rent_Company" ColumnName="Car_Rent_Company" />
-                <ScalarProperty Name="Car_Type_Name" ColumnName="Car_Type_Name" />
-                <ScalarProperty Name="Car_Type" ColumnName="Car_Type" />
-                <ScalarProperty Name="Flt_Class" ColumnName="Flt_Class" />
-                <ScalarProperty Name="Flt_ToTerminal" ColumnName="Flt_ToTerminal" />
-                <ScalarProperty Name="Flt_TAirp_Name" ColumnName="Flt_TAirp_Name" />
-                <ScalarProperty Name="Flt_TAirp" ColumnName="Flt_TAirp" />
-                <ScalarProperty Name="Flt_FromTerminal" ColumnName="Flt_FromTerminal" />
-                <ScalarProperty Name="Flt_FAirp_Name" ColumnName="Flt_FAirp_Name" />
-                <ScalarProperty Name="Flt_FAirp" ColumnName="Flt_FAirp" />
-                <ScalarProperty Name="Flt_CrrNum" ColumnName="Flt_CrrNum" />
-                <ScalarProperty Name="Flt_Carrier" ColumnName="Flt_Carrier" />
-                <ScalarProperty Name="Flt_Open" ColumnName="Flt_Open" />
-                <ScalarProperty Name="Voucher_Number" ColumnName="Voucher_Number" />
-                <ScalarProperty Name="Voucher_Remark" ColumnName="Voucher_Remark" />
-                <ScalarProperty Name="Remark" ColumnName="Remark" />
-                <ScalarProperty Name="cc" ColumnName="cc" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="PAX" ColumnName="PAX" />
-                <ScalarProperty Name="THour" ColumnName="THour" />
-                <ScalarProperty Name="Tdate" ColumnName="Tdate" />
-                <ScalarProperty Name="TDest_Name" ColumnName="TDest_Name" />
-                <ScalarProperty Name="TDest" ColumnName="TDest" />
-                <ScalarProperty Name="FHour" ColumnName="FHour" />
-                <ScalarProperty Name="FDate" ColumnName="FDate" />
-                <ScalarProperty Name="FDest_Name" ColumnName="FDest_Name" />
-                <ScalarProperty Name="FDest" ColumnName="FDest" />
-                <ScalarProperty Name="CancelPRC" ColumnName="CancelPRC" />
-                <ScalarProperty Name="DateLimit" ColumnName="DateLimit" />
-                <ScalarProperty Name="BasisFare" ColumnName="BasisFare" />
-                <ScalarProperty Name="Reference2" ColumnName="Reference2" />
-                <ScalarProperty Name="Referens" ColumnName="Referens" />
-                <ScalarProperty Name="Confirm_By" ColumnName="Confirm_By" />
-                <ScalarProperty Name="Supplier_Paid" ColumnName="Supplier_Paid" />
-                <ScalarProperty Name="Supplier" ColumnName="Supplier" />
-                <ScalarProperty Name="Type" ColumnName="Type" />
-                <ScalarProperty Name="Service" ColumnName="Service" />
-                <ScalarProperty Name="FromInternet" ColumnName="FromInternet" />
-                <ScalarProperty Name="Department" ColumnName="Department" />
-                <ScalarProperty Name="Line" ColumnName="Line" />
-                <ScalarProperty Name="Pnr_Pnr" ColumnName="Pnr_Pnr" />
+                <ScalarProperty Name="LA_ID" ColumnName="LA_ID" />
+                <ScalarProperty Name="pla_line" ColumnName="pla_line" />
+                <ScalarProperty Name="La_Supplier" ColumnName="La_Supplier" />
+                <ScalarProperty Name="pla_Room_class_RQ" ColumnName="pla_Room_class_RQ" />
+                <ScalarProperty Name="pla_Room_class_RCV" ColumnName="pla_Room_class_RCV" />
+                <ScalarProperty Name="pla_Room_type" ColumnName="pla_Room_type" />
+                <ScalarProperty Name="pla_Date_from" ColumnName="pla_Date_from" />
+                <ScalarProperty Name="pla_Date_To" ColumnName="pla_Date_To" />
+                <ScalarProperty Name="pla_cots" ColumnName="pla_cots" />
+                <ScalarProperty Name="pla_ExtraBad" ColumnName="pla_ExtraBad" />
+                <ScalarProperty Name="pla_Meals" ColumnName="pla_Meals" />
+                <ScalarProperty Name="pla_Room_Amount" ColumnName="pla_Room_Amount" />
+                <ScalarProperty Name="pla_Status" ColumnName="pla_Status" />
+                <ScalarProperty Name="pla_Remark" ColumnName="pla_Remark" />
+                <ScalarProperty Name="pla_RefNumber" ColumnName="pla_RefNumber" />
+                <ScalarProperty Name="pla_RefClerk" ColumnName="pla_RefClerk" />
+                <ScalarProperty Name="pla_LinkFrom" ColumnName="pla_LinkFrom" />
+                <ScalarProperty Name="msg_id" ColumnName="msg_id" />
+                <ScalarProperty Name="pck_id" ColumnName="pck_id" />
+                <ScalarProperty Name="pla_Pointer" ColumnName="pla_Pointer" />
+                <ScalarProperty Name="Pla_Voucher" ColumnName="Pla_Voucher" />
+                <ScalarProperty Name="Pla_Voucher_Clerk" ColumnName="Pla_Voucher_Clerk" />
+                <ScalarProperty Name="Pla_Voucher_Date" ColumnName="Pla_Voucher_Date" />
+                <ScalarProperty Name="pla_DateUpd" ColumnName="pla_DateUpd" />
+                <ScalarProperty Name="pla_User" ColumnName="pla_User" />
+                <ScalarProperty Name="GNR_Description" ColumnName="GNR_Description" />
+                <ScalarProperty Name="Meal_Description" ColumnName="Meal_Description" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="pla_Voucher_Remark" ColumnName="pla_Voucher_Remark" />
+                <ScalarProperty Name="Esource" ColumnName="Esource" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Pnr_rate">
-            <EntityTypeMapping TypeName="test_OdysseaModel.Pnr_rate">
+            <EntityTypeMapping TypeName="Ent.Pnr_rate">
               <MappingFragment StoreEntitySet="Pnr_rate">
-                <ScalarProperty Name="Without_Vat" ColumnName="Without_Vat" />
-                <ScalarProperty Name="VAT_Purch" ColumnName="VAT_Purch" />
-                <ScalarProperty Name="VAT_Cms" ColumnName="VAT_Cms" />
-                <ScalarProperty Name="ATC" ColumnName="ATC" />
-                <ScalarProperty Name="Pnrr_User" ColumnName="Pnrr_User" />
-                <ScalarProperty Name="Pnrr_DateUpd" ColumnName="Pnrr_DateUpd" />
-                <ScalarProperty Name="Pnrr_Client_Price" ColumnName="Pnrr_Client_Price" />
-                <ScalarProperty Name="Pnrr_CalcStatus" ColumnName="Pnrr_CalcStatus" />
-                <ScalarProperty Name="Pnrr_Price_Type" ColumnName="Pnrr_Price_Type" />
-                <ScalarProperty Name="Pnrr_Comm_Product" ColumnName="Pnrr_Comm_Product" />
-                <ScalarProperty Name="Pnrr_Comm_Need" ColumnName="Pnrr_Comm_Need" />
-                <ScalarProperty Name="Pnrr_Comm_Summ" ColumnName="Pnrr_Comm_Summ" />
-                <ScalarProperty Name="Pnrr_Comm_Percent" ColumnName="Pnrr_Comm_Percent" />
-                <ScalarProperty Name="Pnrr_Comm_Group" ColumnName="Pnrr_Comm_Group" />
-                <ScalarProperty Name="Pnrr_Inv_Supplier" ColumnName="Pnrr_Inv_Supplier" />
-                <ScalarProperty Name="Pnrr_Invoice" ColumnName="Pnrr_Invoice" />
-                <ScalarProperty Name="Pnrr_vat" ColumnName="Pnrr_vat" />
-                <ScalarProperty Name="Pnrr_Price_Include" ColumnName="Pnrr_Price_Include" />
-                <ScalarProperty Name="Pnrr_Rate_Detail" ColumnName="Pnrr_Rate_Detail" />
-                <ScalarProperty Name="Pnrr_Rate_neto" ColumnName="Pnrr_Rate_neto" />
-                <ScalarProperty Name="Pnrr_Rate_brutto" ColumnName="Pnrr_Rate_brutto" />
-                <ScalarProperty Name="Pnrr_CurrNeto" ColumnName="Pnrr_CurrNeto" />
-                <ScalarProperty Name="Pnrr_CurrBrutto" ColumnName="Pnrr_CurrBrutto" />
-                <ScalarProperty Name="Pnrr_PriceList" ColumnName="Pnrr_PriceList" />
-                <ScalarProperty Name="Pnrr_Rate_PLG" ColumnName="Pnrr_Rate_PLG" />
-                <ScalarProperty Name="Pnrr_Rate_Code" ColumnName="Pnrr_Rate_Code" />
-                <ScalarProperty Name="Pnrr_Rate_Type" ColumnName="Pnrr_Rate_Type" />
-                <ScalarProperty Name="Pnrr_Line" ColumnName="Pnrr_Line" />
-                <ScalarProperty Name="Pnrr_Flight" ColumnName="Pnrr_Flight" />
-                <ScalarProperty Name="Pnrr_service" ColumnName="Pnrr_service" />
-                <ScalarProperty Name="Pnrr_Supp" ColumnName="Pnrr_Supp" />
-                <ScalarProperty Name="Pnrr_Id" ColumnName="Pnrr_Id" />
-                <ScalarProperty Name="PX_ID" ColumnName="PX_ID" />
                 <ScalarProperty Name="Pnr_pnr" ColumnName="Pnr_pnr" />
+                <ScalarProperty Name="PX_ID" ColumnName="PX_ID" />
+                <ScalarProperty Name="Pnrr_Id" ColumnName="Pnrr_Id" />
+                <ScalarProperty Name="Pnrr_Supp" ColumnName="Pnrr_Supp" />
+                <ScalarProperty Name="Pnrr_service" ColumnName="Pnrr_service" />
+                <ScalarProperty Name="Pnrr_Flight" ColumnName="Pnrr_Flight" />
+                <ScalarProperty Name="Pnrr_Line" ColumnName="Pnrr_Line" />
+                <ScalarProperty Name="Pnrr_Rate_Type" ColumnName="Pnrr_Rate_Type" />
+                <ScalarProperty Name="Pnrr_Rate_Code" ColumnName="Pnrr_Rate_Code" />
+                <ScalarProperty Name="Pnrr_Rate_PLG" ColumnName="Pnrr_Rate_PLG" />
+                <ScalarProperty Name="Pnrr_PriceList" ColumnName="Pnrr_PriceList" />
+                <ScalarProperty Name="Pnrr_CurrBrutto" ColumnName="Pnrr_CurrBrutto" />
+                <ScalarProperty Name="Pnrr_CurrNeto" ColumnName="Pnrr_CurrNeto" />
+                <ScalarProperty Name="Pnrr_Rate_brutto" ColumnName="Pnrr_Rate_brutto" />
+                <ScalarProperty Name="Pnrr_Rate_neto" ColumnName="Pnrr_Rate_neto" />
+                <ScalarProperty Name="Pnrr_Rate_Detail" ColumnName="Pnrr_Rate_Detail" />
+                <ScalarProperty Name="Pnrr_Price_Include" ColumnName="Pnrr_Price_Include" />
+                <ScalarProperty Name="Pnrr_vat" ColumnName="Pnrr_vat" />
+                <ScalarProperty Name="Pnrr_Invoice" ColumnName="Pnrr_Invoice" />
+                <ScalarProperty Name="Pnrr_Inv_Supplier" ColumnName="Pnrr_Inv_Supplier" />
+                <ScalarProperty Name="Pnrr_Comm_Group" ColumnName="Pnrr_Comm_Group" />
+                <ScalarProperty Name="Pnrr_Comm_Percent" ColumnName="Pnrr_Comm_Percent" />
+                <ScalarProperty Name="Pnrr_Comm_Summ" ColumnName="Pnrr_Comm_Summ" />
+                <ScalarProperty Name="Pnrr_Comm_Need" ColumnName="Pnrr_Comm_Need" />
+                <ScalarProperty Name="Pnrr_Comm_Product" ColumnName="Pnrr_Comm_Product" />
+                <ScalarProperty Name="Pnrr_Price_Type" ColumnName="Pnrr_Price_Type" />
+                <ScalarProperty Name="Pnrr_CalcStatus" ColumnName="Pnrr_CalcStatus" />
+                <ScalarProperty Name="Pnrr_Client_Price" ColumnName="Pnrr_Client_Price" />
+                <ScalarProperty Name="Pnrr_DateUpd" ColumnName="Pnrr_DateUpd" />
+                <ScalarProperty Name="Pnrr_User" ColumnName="Pnrr_User" />
+                <ScalarProperty Name="ATC" ColumnName="ATC" />
+                <ScalarProperty Name="VAT_Cms" ColumnName="VAT_Cms" />
+                <ScalarProperty Name="VAT_Purch" ColumnName="VAT_Purch" />
+                <ScalarProperty Name="Without_Vat" ColumnName="Without_Vat" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="PCK_Package">
-            <EntityTypeMapping TypeName="test_OdysseaModel.PCK_Package">
-              <MappingFragment StoreEntitySet="PCK_Package">
-                <ScalarProperty Name="usr" ColumnName="usr" />
-                <ScalarProperty Name="dateUpd" ColumnName="dateUpd" />
-                <ScalarProperty Name="price_id" ColumnName="price_id" />
-                <ScalarProperty Name="isBClientOnly" ColumnName="isBClientOnly" />
-                <ScalarProperty Name="feedback_id" ColumnName="feedback_id" />
-                <ScalarProperty Name="TourQuotId" ColumnName="TourQuotId" />
-                <ScalarProperty Name="itin_id" ColumnName="itin_id" />
-                <ScalarProperty Name="exchangeRate" ColumnName="exchangeRate" />
-                <ScalarProperty Name="pckClass" ColumnName="pckClass" />
-                <ScalarProperty Name="lang" ColumnName="lang" />
-                <ScalarProperty Name="category" ColumnName="category" />
-                <ScalarProperty Name="comission" ColumnName="comission" />
-                <ScalarProperty Name="WeekDays" ColumnName="WeekDays" />
-                <ScalarProperty Name="LastMinutes" ColumnName="LastMinutes" />
-                <ScalarProperty Name="IsNetto" ColumnName="IsNetto" />
-                <ScalarProperty Name="IsOverNight" ColumnName="IsOverNight" />
-                <ScalarProperty Name="IsMainInGroup" ColumnName="IsMainInGroup" />
-                <ScalarProperty Name="IsRestrictActive" ColumnName="IsRestrictActive" />
-                <ScalarProperty Name="IsDesktopView" ColumnName="IsDesktopView" />
-                <ScalarProperty Name="IsInternetView" ColumnName="IsInternetView" />
-                <ScalarProperty Name="IsTranslateCC" ColumnName="IsTranslateCC" />
-                <ScalarProperty Name="IsCar" ColumnName="IsCar" />
-                <ScalarProperty Name="IsHotel" ColumnName="IsHotel" />
-                <ScalarProperty Name="ext_code" ColumnName="ext_code" />
-                <ScalarProperty Name="subj_id" ColumnName="subj_id" />
-                <ScalarProperty Name="service" ColumnName="service" />
-                <ScalarProperty Name="supplier" ColumnName="supplier" />
-                <ScalarProperty Name="reference" ColumnName="reference" />
-                <ScalarProperty Name="status" ColumnName="status" />
-                <ScalarProperty Name="price_flt_only" ColumnName="price_flt_only" />
-                <ScalarProperty Name="rq_la" ColumnName="rq_la" />
-                <ScalarProperty Name="rq_flt" ColumnName="rq_flt" />
-                <ScalarProperty Name="mixed_regular_only" ColumnName="mixed_regular_only" />
-                <ScalarProperty Name="mixed_airline_only" ColumnName="mixed_airline_only" />
-                <ScalarProperty Name="minimum_px" ColumnName="minimum_px" />
-                <ScalarProperty Name="flt_duration_to" ColumnName="flt_duration_to" />
-                <ScalarProperty Name="flt_duration" ColumnName="flt_duration" />
-                <ScalarProperty Name="destination_2" ColumnName="destination_2" />
-                <ScalarProperty Name="destination_1" ColumnName="destination_1" />
-                <ScalarProperty Name="dest_from" ColumnName="dest_from" />
-                <ScalarProperty Name="cc" ColumnName="cc" />
-                <ScalarProperty Name="Room_Code_bas" ColumnName="Room_Code_bas" />
-                <ScalarProperty Name="Room_Type_bas" ColumnName="Room_Type_bas" />
-                <ScalarProperty Name="name_local" ColumnName="name_local" />
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="code" ColumnName="code" />
-                <ScalarProperty Name="PCK_ID" ColumnName="PCK_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="Plg_GetFull_CDM_Data" FunctionName="Ent.Store.Plg_GetFull_CDM_Data">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Ent.Plg_GetFull_CDM_Data_Result">
+                <ScalarProperty Name="PX_ID" ColumnName="PX_ID" />
+                <ScalarProperty Name="prod" ColumnName="prod" />
+                <ScalarProperty Name="prod_code" ColumnName="prod_code" />
+                <ScalarProperty Name="prod_id" ColumnName="prod_id" />
+                <ScalarProperty Name="prod_id2" ColumnName="prod_id2" />
+                <ScalarProperty Name="Comm_Category" ColumnName="Comm_Category" />
+                <ScalarProperty Name="Comm_Norm" ColumnName="Comm_Norm" />
+                <ScalarProperty Name="Comm_Spec" ColumnName="Comm_Spec" />
+                <ScalarProperty Name="prc_amnt" ColumnName="prc_amnt" />
+                <ScalarProperty Name="incl_tax" ColumnName="incl_tax" />
+                <ScalarProperty Name="incl_reg" ColumnName="incl_reg" />
+                <ScalarProperty Name="CDM_Type" ColumnName="CDM_Type" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

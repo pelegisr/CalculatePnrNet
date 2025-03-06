@@ -4,15 +4,16 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="730eda394f264abcba2c50fed7a9b35b" Name="Diagram1" ZoomLevel="109">
-        <EntityTypeShape EntityType="test_OdysseaModel.PNR" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="test_OdysseaModel.global" Width="1.5" PointX="3.875" PointY="1.125" />
-        <EntityTypeShape EntityType="test_OdysseaModel.Pnr_La" Width="1.5" PointX="3" PointY="5.25" />
-        <AssociationConnector Association="test_OdysseaModel.FK_Pnr_La_Pnr" />
-        <EntityTypeShape EntityType="test_OdysseaModel.Pnr_Free" Width="1.5" PointX="5.375" PointY="5.75" />
-        <EntityTypeShape EntityType="test_OdysseaModel.Pnr_rate" Width="1.5" PointX="3" PointY="14" />
-        <AssociationConnector Association="test_OdysseaModel.FK_Pnr_rate_Pnr" />
-        <EntityTypeShape EntityType="test_OdysseaModel.PCK_Package" Width="1.5" PointX="7.375" PointY="0.75" />
+      <Diagram DiagramId="4016cedc14b047b89b75aa7ddc757cb1" Name="Diagram1" ZoomLevel="68">
+        <EntityTypeShape EntityType="Ent.global" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Ent.Internet_PNR_LOG" Width="1.5" PointX="5.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Ent.PCK_Package" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Ent.PNR" Width="1.5" PointX="0.75" PointY="4.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Ent.Pnr_Free" Width="1.5" PointX="9.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Ent.Pnr_La" Width="1.5" PointX="3" PointY="1.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Ent.Pnr_rate" Width="1.5" PointX="3" PointY="9.5" IsExpanded="true" />
+        <AssociationConnector Association="Ent.FK_Pnr_La_Pnr" ManuallyRouted="false" />
+        <AssociationConnector Association="Ent.FK_Pnr_rate_Pnr" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

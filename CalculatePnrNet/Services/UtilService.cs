@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
+using NLog;
 using Peleg.CalculatePnrNet.Data;
 
 namespace Peleg.CalculatePnrNet.Services
 {
-    class GlobalParameterService
+    class UtilService
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly PnrDbContext _context;
-        public GlobalParameterService(PnrDbContext context)
+        public UtilService(PnrDbContext context)
         {
             _context = context;
         }
@@ -128,7 +132,26 @@ namespace Peleg.CalculatePnrNet.Services
             }
         }
 
+        public void SaveIntoInternetPnrLog(string code, string value)
+        {
+            try
+            {
+                var logEntry = new Internet_PNR_LOG
+                {
+                    Prm_Code = code,
+                    Prm_Value = value
+                };
 
+                _context.Internet_PNR_LOG.Add(logEntry);
+                _context.Entry(logEntry).State = EntityState.Added; // Explicitly mark only this entity as added
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, $"Error in SaveIntoInternetPnrLog: Code={code}, Value={value}");
+                throw; 
+            }
+        }
 
     }
 }

@@ -24,7 +24,7 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>5</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -75,13 +75,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\PCK_Package.cs">
+    <Compile Include="Data\global.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
-    <Compile Include="DTO\GlobalParameters.cs" />
-    <Compile Include="Services\CalculatePNR.cs" />
-    <Compile Include="Services\CalculationService.cs" />
-    <Compile Include="Data\global.cs">
+    <Compile Include="Data\Internet_PNR_LOG.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Data\Model.Context.cs">
@@ -99,10 +96,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Model.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Data\PCK_Package.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\Plg_GetFull_CDM_Data_Result.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Data\PNR.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
-    <Compile Include="Data\PnrDbContext.cs" />
     <Compile Include="Data\Pnr_Free.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -112,8 +114,13 @@
     <Compile Include="Data\Pnr_rate.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="DTO\CDMData.cs" />
+    <Compile Include="DTO\GlobalParameters.cs" />
+    <Compile Include="Services\CalculatePNR.cs" />
+    <Compile Include="Services\CalculationService.cs" />
+    <Compile Include="Data\PnrDbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\GlobalParameterService.cs" />
+    <Compile Include="Services\UtilService.cs" />
     <Compile Include="DTO\PnrData.cs" />
     <Compile Include="Services\PnrService.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">

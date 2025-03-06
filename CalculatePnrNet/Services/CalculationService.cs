@@ -23,9 +23,7 @@ namespace Peleg.CalculatePnrNet
 
         public decimal CalcGross(PnrData pnr)
         {
-            // Example of calling a stored procedure
-            //return _context.Database.SqlQuery<decimal>("EXEC CalcGross @PnrId",
-            //    new SqlParameter("@PnrId", pnr.Id)).FirstOrDefault();
+            // Test global paramter load
             if (_globalParams.CruiseEnable) {
                 return 1;
             }
@@ -35,9 +33,6 @@ namespace Peleg.CalculatePnrNet
 
         public decimal CalcNet(PnrData pnr)
         {
-            //decimal baseNet = CalcGross(pnr) - pnr.Tickets.Sum(t => t.Discount);
-            //decimal taxRate = decimal.Parse(_globalParams.GetParameter("TaxRate") ?? "0.1"); // Default 10%
-            //return baseNet * (1 + taxRate);
             return 0;
         }
     }

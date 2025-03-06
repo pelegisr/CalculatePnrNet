@@ -10,12 +10,11 @@ namespace Peleg.CalculatePnrNet.DTO
 {
     public class GlobalParameters
     {
-        private readonly GlobalParameterService _globalParameterService;
-        private readonly PnrDbContext _context;
-
+        private readonly UtilService _utilService;
+        
         public GlobalParameters(PnrDbContext context)
         {
-            _globalParameterService = new GlobalParameterService(context);
+            _utilService = new UtilService(context);
         }
 
         private bool? _seatWithCommiss;
@@ -25,7 +24,7 @@ namespace Peleg.CalculatePnrNet.DTO
             {
                 if (_seatWithCommiss == null)
                 {
-                    _seatWithCommiss = _globalParameterService.GetNumericValue("SeatWithCommiss") == 1;
+                    _seatWithCommiss = _utilService.GetNumericValue("SeatWithCommiss") == 1;
                 }
                 return _seatWithCommiss.Value; // Ensures a non-null return value
             }
@@ -38,7 +37,7 @@ namespace Peleg.CalculatePnrNet.DTO
             {
                 if (_pnr4GroupPCK == null)
                 {
-                    _pnr4GroupPCK = _globalParameterService.GetNumericValue("Pnr4GroupPCK") == 1;
+                    _pnr4GroupPCK = _utilService.GetNumericValue("Pnr4GroupPCK") == 1;
                 }
                 return _pnr4GroupPCK.Value; // Ensures a non-null return value
             }
@@ -51,7 +50,7 @@ namespace Peleg.CalculatePnrNet.DTO
             {
                 if (_checkByConsist == null)
                 {
-                    _checkByConsist = _globalParameterService.GetNumericValue("CheckByConsist") == 1;
+                    _checkByConsist = _utilService.GetNumericValue("CheckByConsist") == 1;
                 }
                 return _checkByConsist.Value; // Ensures a non-null return value
             }
@@ -66,7 +65,7 @@ namespace Peleg.CalculatePnrNet.DTO
             {
                 if (_buildFltVch == null)
                 {
-                    _buildFltVch = _globalParameterService.GetNumericValue("Build_Flt_Vch") == 1;
+                    _buildFltVch = _utilService.GetNumericValue("Build_Flt_Vch") == 1;
                 }
                 return _buildFltVch.Value;
             }
@@ -79,7 +78,7 @@ namespace Peleg.CalculatePnrNet.DTO
             {
                 if (_mustCheckMealAdd == null)
                 {
-                    _mustCheckMealAdd = Convert.ToInt32(_globalParameterService.GetNumericValue("CheckMealAdd")) == 1;
+                    _mustCheckMealAdd = Convert.ToInt32(_utilService.GetNumericValue("CheckMealAdd")) == 1;
                 }
                 return _mustCheckMealAdd.Value;
             }
@@ -92,7 +91,7 @@ namespace Peleg.CalculatePnrNet.DTO
             {
                 if (_babyPayNetFlt == null)
                 {
-                    _babyPayNetFlt = _globalParameterService.GetNumericValue("BabyPayNetFlt") == 1;
+                    _babyPayNetFlt = _utilService.GetNumericValue("BabyPayNetFlt") == 1;
                 }
                 return _babyPayNetFlt.Value;
             }
@@ -105,7 +104,7 @@ namespace Peleg.CalculatePnrNet.DTO
             {
                 if (_babyCruiseTax == null)
                 {
-                    _babyCruiseTax = _globalParameterService.GetNumericValue("Baby_CruiseTax") == 1;
+                    _babyCruiseTax = _utilService.GetNumericValue("Baby_CruiseTax") == 1;
                 }
                 return _babyCruiseTax.Value;
             }
@@ -118,7 +117,7 @@ namespace Peleg.CalculatePnrNet.DTO
             {
                 if (_accumulateComm == null)
                 {
-                    _accumulateComm = _globalParameterService.GetNumericValue("Accumulate_Comm") == 1;
+                    _accumulateComm = _utilService.GetNumericValue("Accumulate_Comm") == 1;
                 }
                 return _accumulateComm.Value;
             }
@@ -131,7 +130,7 @@ namespace Peleg.CalculatePnrNet.DTO
             {
                 if (_showPriceBySrv == null)
                 {
-                    _showPriceBySrv = _globalParameterService.GetNumericValue("ShowPriceBySrv") == 1;
+                    _showPriceBySrv = _utilService.GetNumericValue("ShowPriceBySrv") == 1;
                 }
                 return _showPriceBySrv.Value;
             }
@@ -144,7 +143,7 @@ namespace Peleg.CalculatePnrNet.DTO
             {
                 if (_addNetoPrice == null)
                 {
-                    _addNetoPrice = _globalParameterService.GetNumericValue("AddNetoPrice") == 1;
+                    _addNetoPrice = _utilService.GetNumericValue("AddNetoPrice") == 1;
                 }
                 return _addNetoPrice.Value;
             }
@@ -157,7 +156,7 @@ namespace Peleg.CalculatePnrNet.DTO
             {
                 if (_isPckCarAllPric == null)
                 {
-                    _isPckCarAllPric = _globalParameterService.GetNumericValue("IsPckCarAllPric") == 1;
+                    _isPckCarAllPric = _utilService.GetNumericValue("IsPckCarAllPric") == 1;
                 }
                 return _isPckCarAllPric.Value;
             }
@@ -170,7 +169,7 @@ namespace Peleg.CalculatePnrNet.DTO
             {
                 if (_discountPckNeto == null)
                 {
-                    _discountPckNeto = _globalParameterService.GetNumericValue("DiscountPckNeto") == 1;
+                    _discountPckNeto = _utilService.GetNumericValue("DiscountPckNeto") == 1;
                 }
                 return _discountPckNeto.Value;
             }
@@ -183,7 +182,7 @@ namespace Peleg.CalculatePnrNet.DTO
             {
                 if (_multiPckEnabled == null)
                 {
-                    _multiPckEnabled = _globalParameterService.GetNumericValue("MultiPckEnabled") == 1;
+                    _multiPckEnabled = _utilService.GetNumericValue("MultiPckEnabled") == 1;
                 }
                 return _multiPckEnabled.Value;
             }
@@ -196,14 +195,14 @@ namespace Peleg.CalculatePnrNet.DTO
             {
                 if (_calcByGroupEnab == null)
                 {
-                    _calcByGroupEnab = _globalParameterService.GetNumericValue("CalcByGroupEnab") == 1;
+                    _calcByGroupEnab = _utilService.GetNumericValue("CalcByGroupEnab") == 1;
                 }
                 return _calcByGroupEnab.Value;
             }
         }
 
         private string _calcGroupCode;
-        public string CalcGroupCode => _calcGroupCode ?? (_calcGroupCode = _globalParameterService.GetStringValue("CalcByGroupEnab"));
+        public string CalcGroupCode => _calcGroupCode ?? (_calcGroupCode = _utilService.GetStringValue("CalcByGroupEnab"));
 
 
         private bool? _showDPCDebug;
@@ -213,7 +212,7 @@ namespace Peleg.CalculatePnrNet.DTO
             {
                 if (_showDPCDebug == null)
                 {
-                    _showDPCDebug = _globalParameterService.GetNumericValue("ShowDPCDebug") == 1;
+                    _showDPCDebug = _utilService.GetNumericValue("ShowDPCDebug") == 1;
                 }
                 return _showDPCDebug.Value;
             }
@@ -226,7 +225,7 @@ namespace Peleg.CalculatePnrNet.DTO
             {
                 if (_cruiseEnable == null)
                 {
-                    _cruiseEnable = _globalParameterService.GetNumericValue("CruiseEnable") == 1;
+                    _cruiseEnable = _utilService.GetNumericValue("CruiseEnable") == 1;
                 }
                 return _cruiseEnable.Value;
             }
@@ -239,7 +238,7 @@ namespace Peleg.CalculatePnrNet.DTO
             {
                 if (_eventAsHotel == null)
                 {
-                    _eventAsHotel = _globalParameterService.GetGlobalParameter("EventsAsHotel").Value;
+                    _eventAsHotel = _utilService.GetGlobalParameter("EventsAsHotel").Value;
                 }
                 return _eventAsHotel;
             }
@@ -252,7 +251,7 @@ namespace Peleg.CalculatePnrNet.DTO
             {
                 if (_htlChoiceBasket == null)
                 {
-                    _htlChoiceBasket = _globalParameterService.GetNumericValue("HtlChoiceBasket") == 1;
+                    _htlChoiceBasket = _utilService.GetNumericValue("HtlChoiceBasket") == 1;
                 }
                 return _htlChoiceBasket.Value;
             }
@@ -265,7 +264,7 @@ namespace Peleg.CalculatePnrNet.DTO
             {
                 if (_arpTaxNetByAgt == null)
                 {
-                    _arpTaxNetByAgt = _globalParameterService.GetNumericValue("ArpTaxNetByAgt") == 1;
+                    _arpTaxNetByAgt = _utilService.GetNumericValue("ArpTaxNetByAgt") == 1;
                 }
                 return _arpTaxNetByAgt.Value;
             }
@@ -278,7 +277,7 @@ namespace Peleg.CalculatePnrNet.DTO
             {
                 if (_atcEnabled == null)
                 {
-                    var value = _globalParameterService.GetNumericValue("ATC_Enabled");
+                    var value = _utilService.GetNumericValue("ATC_Enabled");
                     _atcEnabled = value == 0 ? false : Convert.ToBoolean(value);
                 }
                 return _atcEnabled.Value;

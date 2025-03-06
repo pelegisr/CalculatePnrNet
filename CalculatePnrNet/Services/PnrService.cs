@@ -44,6 +44,35 @@ namespace Peleg.CalculatePnrNet.Services
             }
         }
 
+        // GetFull_CDM_ByPnr
+        public void GetFullCDMByPnr()
+        {
+            //try
+            //{
+            //    // Call stored procedure or query the database
+            //    var cdmData = _context.Plg_GetFull_CDM_Data(pnrId).ToList();
+
+            //    if (cdmData == null || !cdmData.Any())
+            //        return new CDMByPnrResult();
+
+            //    var result = new CDMByPnrResult
+            //    {
+            //        CommissionData = cdmData.Where(cdm => cdm.CDM_Type == "C").ToList(),
+            //        DiscountData = cdmData.Where(cdm => cdm.CDM_Type == "D").ToList(),
+            //        MarkUpData = cdmData.Where(cdm => cdm.CDM_Type == "M").ToList()
+            //    };
+
+            //    Logger.Info($"Plg_GetFull_CDM_Data: Finish, PNR={pnrId}");
+            //    return result;
+            //}
+            //catch (Exception ex)
+            //{
+            //    Logger.Error(ex, $"Error in GetFullCDMByPnr: PNR={pnrId}");
+            //    throw;
+            //}
+        }
+
+
         private PnrData BuildPNRDataObject(PNR pnr)
         {
             var pnrData = new PnrData(

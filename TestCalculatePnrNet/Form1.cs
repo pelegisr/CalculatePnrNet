@@ -34,6 +34,7 @@ namespace TestCalculatePnrNet
 
             try
             {
+                //TODO: Specify the connection string here and make PnrDbContext private in the dll
                 using (var context = new PnrDbContext())
                 {
                     var calculator = new CalculatePNR(context);
