@@ -1,57 +1,69 @@
 ﻿using NLog;
 using Peleg.CalculatePnrNet.Data;
-using Peleg.CalculatePnrNet.DTO;
+using Peleg.CalculatePnrNet.Model;
 using Peleg.CalculatePnrNet.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Peleg.CalculatePnrNet
 {
-    public class CalculatePNR
+    public class CalculatePNR : StartMenuInterface.IStartMenu
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private readonly PnrService _pnrService;
-        private readonly CalculationService _calcService;
-        private readonly GlobalParameters _globalParams;
+        private readonly string dataModelConnectionString;
 
-        public CalculatePNR(PnrDbContext context)
+        public void Run(ref string connectionString, ref string taskName)
         {
-            _globalParams = new GlobalParameters(context);
-            _pnrService = new PnrService(context);
-            _calcService = new CalculationService(context, _globalParams);
+            NotImplementedException ex = new NotImplementedException();
+            Logger.Error(ex, "This method is not implemented.");
         }
 
-        public decimal CalcGross(int pnrId)
+        public CalculatePNR(ref string connectionString)
+        {
+            dataModelConnectionString = NaumTools.Utils.Sql2Entity(connectionString, "Data.Model");
+        }
+
+        public CalculationResult Calculate(int pnrId)
         {
             try
             {
-                var pnr = _pnrService.GetPnrData(pnrId);
-                return _calcService.CalcGross(pnr);
+                using (var context = new PnrDbContext(dataModelConnectionString))
+                {
+                    GlobalParameters _globalParams = new GlobalParameters(context);
+                    PnrService _pnrService = new PnrService(context, _globalParams);
+                    CalculationService _calculationService = new CalculationService(context, _globalParams);
+
+                    PnrModel pnr = _pnrService.GetPnr(pnrId);
+                    if (pnr == null)
+                    {
+                        Logger.Warn($"PNR ID {pnrId} not found in the database.");
+                        return new CalculationResult
+                        {
+                            Success = false,
+                            Value = -1, 
+                            ErrorMessage = $"PNR ID {pnrId} not found."
+                        };
+                    }
+                    var amount = _calculationService.Calculate(pnr);
+                    return new CalculationResult
+                    {
+                        Success = true,
+                        Value = amount,
+                        ErrorMessage = null
+                    };
+                }
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, $"Failed to calculate gross for PNR ID {pnrId}");
+                Logger.Error(ex, $"Failed to calculate for PNR ID {pnrId}");
                 throw; // Re-throw to inform the caller
             }
+
         }
 
         public decimal CalcNet(int pnrId)
         {
-            try
-            {
-                var pnr = _pnrService.GetPnrData(pnrId);
-                return _calcService.CalcNet(pnr);
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, $"Failed to calculate net for PNR ID {pnrId}");
-                throw;
-            }
+            return 0;
         }
     }
-
 
 }

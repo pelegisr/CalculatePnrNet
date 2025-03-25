@@ -56,7 +56,7 @@ namespace TestCalculatePnrNet
             this.txtPnr.Name = "txtPnr";
             this.txtPnr.Size = new System.Drawing.Size(131, 20);
             this.txtPnr.TabIndex = 1;
-            this.txtPnr.Text = "180890";
+            this.txtPnr.Text = "305752";
             // 
             // btnCalculateGross
             // 

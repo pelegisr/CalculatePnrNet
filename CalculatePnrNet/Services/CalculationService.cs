@@ -1,12 +1,6 @@
 ﻿using Peleg.CalculatePnrNet.Data;
-using Peleg.CalculatePnrNet.DTO;
-using Peleg.CalculatePnrNet.Services;
-using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
+using Peleg.CalculatePnrNet.Model;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Peleg.CalculatePnrNet
 {
@@ -21,20 +15,32 @@ namespace Peleg.CalculatePnrNet
             _globalParams = globalParams;
         }
 
-        public decimal CalcGross(PnrData pnr)
+        internal decimal Calculate(PnrModel pnrData)
         {
-            // Test global paramter load
-            if (_globalParams.CruiseEnable) {
-                return 1;
+            return Calculate(pnrData, false, false, false);
+        }
+
+        public decimal Calculate(PnrModel pnr, bool netCalculateOnly, bool permissionNetOnly, bool grossCalculateOnly)
+        {
+            //calculationStart line 188
+            if (pnr.NetPricesOnly && permissionNetOnly) netCalculateOnly = true;
+            var pnrRates = pnr.PnrRates;
+
+            if (netCalculateOnly)
+            {
+                pnrRates = pnr.PnrRates.Where(pr => pr.Pnrr_Rate_Type == "B").ToList();
             }
-            return 0;
 
+            if (grossCalculateOnly || pnr.GroupCostingExists)
+            {
+                pnrRates = pnr.PnrRates.Where(pr => pr.Pnrr_Rate_Type == "N").ToList();
+            }
+
+
+            return 0;
         }
 
-        public decimal CalcNet(PnrData pnr)
-        {
-            return 0;
-        }
+        
     }
 
 

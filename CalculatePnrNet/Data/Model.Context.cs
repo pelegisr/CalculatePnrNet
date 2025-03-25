@@ -34,6 +34,8 @@ namespace Peleg.CalculatePnrNet.Data
         public virtual DbSet<Pnr_Free> Pnr_Free { get; set; }
         public virtual DbSet<Pnr_La> Pnr_La { get; set; }
         public virtual DbSet<Pnr_rate> Pnr_rate { get; set; }
+        public virtual DbSet<PNR_Link_Supplier> PNR_Link_Supplier { get; set; }
+        public virtual DbSet<Pnr_Px> Pnr_Px { get; set; }
     
         public virtual ObjectResult<Plg_GetFull_CDM_Data_Result> Plg_GetFull_CDM_Data(Nullable<int> pnr)
         {
@@ -42,6 +44,15 @@ namespace Peleg.CalculatePnrNet.Data
                 new ObjectParameter("Pnr", typeof(int));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Plg_GetFull_CDM_Data_Result>("Plg_GetFull_CDM_Data", pnrParameter);
+        }
+    
+        public virtual ObjectResult<PLG_Check_Pnr_La_Price_Result> PLG_Check_Pnr_La_Price(Nullable<int> pnr_Pnr)
+        {
+            var pnr_PnrParameter = pnr_Pnr.HasValue ?
+                new ObjectParameter("Pnr_Pnr", pnr_Pnr) :
+                new ObjectParameter("Pnr_Pnr", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<PLG_Check_Pnr_La_Price_Result>("PLG_Check_Pnr_La_Price", pnr_PnrParameter);
         }
     }
 }

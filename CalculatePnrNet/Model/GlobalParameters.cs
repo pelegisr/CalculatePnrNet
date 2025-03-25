@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Peleg.CalculatePnrNet.DTO
+namespace Peleg.CalculatePnrNet.Model
 {
     public class GlobalParameters
     {
@@ -281,6 +281,97 @@ namespace Peleg.CalculatePnrNet.DTO
                     _atcEnabled = value == 0 ? false : Convert.ToBoolean(value);
                 }
                 return _atcEnabled.Value;
+            }
+        }
+
+        private bool? _BabyPayHtlOnly;
+        public bool BabyPayHtlOnly
+        {
+            get
+            {
+                if (_BabyPayHtlOnly == null)
+                {
+                    _BabyPayHtlOnly = _utilService.GetNumericValue("BabyPay_HtlOnly") == 1;
+                }
+                return _BabyPayHtlOnly.Value;
+            }
+        }
+
+        private bool? _MustSameBoard;
+        public bool MustSameBoard
+        {
+            get
+            {
+                if (_MustSameBoard == null)
+                {
+                    _MustSameBoard = _utilService.GetNumericValue("MustSameBoard") == 1;
+                }
+                return _MustSameBoard.Value;
+            }
+        }
+
+        private string _LocalCurrency;
+        public string LocalCurrency
+        {
+            get
+            {
+                if (_LocalCurrency == null)
+                {
+                    _LocalCurrency = _utilService.GetStringValue("Currency");
+                }
+                return _LocalCurrency;
+            }
+        }
+
+        private bool? _isKenesSystem;
+        public bool  IsKenesSystem
+        {
+            get
+            {
+                if (_isKenesSystem == null)
+                {
+                    _isKenesSystem = _utilService.GetNumericValue("isKenesSystem") == 1;
+                }
+                return _isKenesSystem.Value;
+            }
+        }
+
+        private string _CalcSystem;
+        public string CalcSystem
+        {
+            get
+            {
+                if (_CalcSystem == null)
+                {
+                    _LocalCurrency = _utilService.GetStringValue("CalcSystem");
+                }
+                return _CalcSystem;
+            }
+        }
+
+        private bool? _Change2Package;
+        public bool Change2Package
+        {
+            get
+            {
+                if (_Change2Package == null)
+                {
+                    _Change2Package = _utilService.GetNumericValue("Change2Package") == 1;
+                }
+                return _Change2Package.Value;
+            }
+        }
+
+        private string _Transfer;
+        public string Transfer
+        {
+            get
+            {
+                if (_Transfer == null)
+                {
+                    _Transfer = _utilService.GetStringValue("Transfer");
+                }
+                return _Transfer;
             }
         }
 

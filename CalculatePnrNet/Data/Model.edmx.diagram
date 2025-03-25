@@ -14,6 +14,9 @@
         <EntityTypeShape EntityType="Ent.Pnr_rate" Width="1.5" PointX="3" PointY="9.5" IsExpanded="true" />
         <AssociationConnector Association="Ent.FK_Pnr_La_Pnr" ManuallyRouted="false" />
         <AssociationConnector Association="Ent.FK_Pnr_rate_Pnr" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="Ent.PNR_Link_Supplier" Width="1.5" PointX="5.375" PointY="11.75" />
+        <EntityTypeShape EntityType="Ent.Pnr_Px" Width="1.5" PointX="3" PointY="18.75" />
+        <AssociationConnector Association="Ent.FK_Pnr_Px_Pnr" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

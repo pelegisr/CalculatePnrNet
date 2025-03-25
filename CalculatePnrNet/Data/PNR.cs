@@ -19,6 +19,7 @@ namespace Peleg.CalculatePnrNet.Data
         {
             this.Pnr_La = new HashSet<Pnr_La>();
             this.Pnr_rate = new HashSet<Pnr_rate>();
+            this.Pnr_Px = new HashSet<Pnr_Px>();
         }
     
         public int pnr_Pnr { get; set; }
@@ -72,5 +73,7 @@ namespace Peleg.CalculatePnrNet.Data
         public virtual ICollection<Pnr_La> Pnr_La { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Pnr_rate> Pnr_rate { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Pnr_Px> Pnr_Px { get; set; }
     }
 }

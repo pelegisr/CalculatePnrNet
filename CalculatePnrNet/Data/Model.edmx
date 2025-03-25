@@ -244,6 +244,48 @@
           <Property Name="pla_Voucher_Remark" Type="varchar" MaxLength="100" />
           <Property Name="Esource" Type="varchar" MaxLength="25" />
         </EntityType>
+        <EntityType Name="PNR_Link_Supplier">
+          <Key>
+            <PropertyRef Name="pnr_pnr" />
+            <PropertyRef Name="pla_line" />
+          </Key>
+          <Property Name="pnr_pnr" Type="int" Nullable="false" />
+          <Property Name="pla_line" Type="smallint" Nullable="false" />
+          <Property Name="la_supplier" Type="varchar" MaxLength="4" Nullable="false" />
+          <Property Name="rate_supplier" Type="varchar" MaxLength="4" Nullable="false" />
+          <Property Name="lnk_User" Type="varchar" MaxLength="25" />
+          <Property Name="lnk_DateUpd" Type="smalldatetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Pnr_Px">
+          <Key>
+            <PropertyRef Name="PX_ID" />
+            <PropertyRef Name="FL_ID" />
+            <PropertyRef Name="pnr_Pnr" />
+          </Key>
+          <Property Name="PX_ID" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="FL_ID" Type="int" Nullable="false" />
+          <Property Name="flt_Combine" Type="char" MaxLength="1" Nullable="false" />
+          <Property Name="pfp_Type" Type="varchar" MaxLength="2" Nullable="false" />
+          <Property Name="pnr_Pnr" Type="int" Nullable="false" />
+          <Property Name="pnr_agent" Type="varchar" MaxLength="7" Nullable="false" />
+          <Property Name="pfp_class" Type="char" MaxLength="1" Nullable="false" />
+          <Property Name="pfp_Return_id" Type="int" />
+          <Property Name="pfp_Return_Combine" Type="char" MaxLength="3" />
+          <Property Name="pfp_Return_class" Type="char" MaxLength="1" />
+          <Property Name="pfp_Return_Type" Type="varchar" MaxLength="3" />
+          <Property Name="pfp_Ticket_Number" Type="varchar" MaxLength="20" />
+          <Property Name="pfp_Ticket_Date" Type="datetime" />
+          <Property Name="pfp_Ticket_Print_Oper" Type="varchar" MaxLength="25" />
+          <Property Name="pfp_status" Type="char" MaxLength="2" Nullable="false" />
+          <Property Name="pfp_TOD" Type="tinyint" />
+          <Property Name="pfp_LOC" Type="varchar" MaxLength="20" />
+          <Property Name="pfp_Priority" Type="tinyint" />
+          <Property Name="pfp_No_Show" Type="bit" />
+          <Property Name="PCK_ID" Type="int" />
+          <Property Name="pfp_DateUpd" Type="datetime" Nullable="false" />
+          <Property Name="pfp_User" Type="varchar" MaxLength="25" />
+          <Property Name="ESource" Type="varchar" MaxLength="25" />
+        </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'test_Odyssea.dbo.Pnr_rate' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Pnr_rate">
@@ -314,6 +356,18 @@ warning 6002: The table/view 'test_Odyssea.dbo.Pnr_rate' does not have a primary
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Pnr_Px_Pnr">
+          <End Role="PNR" Type="Self.PNR" Multiplicity="1" />
+          <End Role="Pnr_Px" Type="Self.Pnr_Px" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PNR">
+              <PropertyRef Name="pnr_Pnr" />
+            </Principal>
+            <Dependent Role="Pnr_Px">
+              <PropertyRef Name="pnr_Pnr" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Pnr_rate_Pnr">
           <End Role="PNR" Type="Self.PNR" Multiplicity="1" />
           <End Role="Pnr_rate" Type="Self.Pnr_rate" Multiplicity="*" />
@@ -326,6 +380,9 @@ warning 6002: The table/view 'test_Odyssea.dbo.Pnr_rate' does not have a primary
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="PLG_Check_Pnr_La_Price" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Pnr_Pnr" Type="int" Mode="In" />
+        </Function>
         <Function Name="Plg_GetFull_CDM_Data" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Pnr" Type="int" Mode="In" />
         </Function>
@@ -336,6 +393,8 @@ warning 6002: The table/view 'test_Odyssea.dbo.Pnr_rate' does not have a primary
           <EntitySet Name="PNR" EntityType="Self.PNR" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Pnr_Free" EntityType="Self.Pnr_Free" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Pnr_La" EntityType="Self.Pnr_La" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PNR_Link_Supplier" EntityType="Self.PNR_Link_Supplier" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Pnr_Px" EntityType="Self.Pnr_Px" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Pnr_rate" EntityType="Self.Pnr_rate" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [Pnr_rate].[Pnr_pnr] AS [Pnr_pnr], 
@@ -377,6 +436,10 @@ warning 6002: The table/view 'test_Odyssea.dbo.Pnr_rate' does not have a primary
           <AssociationSet Name="FK_Pnr_La_Pnr" Association="Self.FK_Pnr_La_Pnr">
             <End Role="PNR" EntitySet="PNR" />
             <End Role="Pnr_La" EntitySet="Pnr_La" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Pnr_Px_Pnr" Association="Self.FK_Pnr_Px_Pnr">
+            <End Role="PNR" EntitySet="PNR" />
+            <End Role="Pnr_Px" EntitySet="Pnr_Px" />
           </AssociationSet>
           <AssociationSet Name="FK_Pnr_rate_Pnr" Association="Self.FK_Pnr_rate_Pnr">
             <End Role="PNR" EntitySet="PNR" />
@@ -516,6 +579,7 @@ warning 6002: The table/view 'test_Odyssea.dbo.Pnr_rate' does not have a primary
           <Property Name="employer_id" Type="Int32" />
           <NavigationProperty Name="Pnr_La" Relationship="Self.FK_Pnr_La_Pnr" FromRole="PNR" ToRole="Pnr_La" />
           <NavigationProperty Name="Pnr_rate" Relationship="Self.FK_Pnr_rate_Pnr" FromRole="PNR" ToRole="Pnr_rate" />
+          <NavigationProperty Name="Pnr_Px" Relationship="Ent.FK_Pnr_Px_Pnr" FromRole="PNR" ToRole="Pnr_Px" />
         </EntityType>
         <EntityType Name="Pnr_Free">
           <Key>
@@ -727,8 +791,17 @@ warning 6002: The table/view 'test_Odyssea.dbo.Pnr_rate' does not have a primary
             <End Role="Pnr_rate" EntitySet="Pnr_rate" />
           </AssociationSet>
           <FunctionImport Name="Plg_GetFull_CDM_Data" ReturnType="Collection(Ent.Plg_GetFull_CDM_Data_Result)">
-            <Parameter Name="Pnr" Mode="In" Type="Int32" />
+          <Parameter Name="Pnr" Mode="In" Type="Int32" />
           </FunctionImport>
+          <FunctionImport Name="PLG_Check_Pnr_La_Price" ReturnType="Collection(Ent.PLG_Check_Pnr_La_Price_Result)">
+          <Parameter Name="Pnr_Pnr" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <EntitySet Name="PNR_Link_Supplier" EntityType="Ent.PNR_Link_Supplier" />
+          <EntitySet Name="Pnr_Px" EntityType="Ent.Pnr_Px" />
+          <AssociationSet Name="FK_Pnr_Px_Pnr" Association="Ent.FK_Pnr_Px_Pnr">
+            <End Role="PNR" EntitySet="PNRs" />
+            <End Role="Pnr_Px" EntitySet="Pnr_Px" />
+          </AssociationSet>
         </EntityContainer>
         <ComplexType Name="Plg_GetFull_CDM_Data_Result">
           <Property Type="String" Name="PX_ID" Nullable="true" MaxLength="10" />
@@ -744,6 +817,84 @@ warning 6002: The table/view 'test_Odyssea.dbo.Pnr_rate' does not have a primary
           <Property Type="String" Name="incl_reg" Nullable="true" MaxLength="1" />
           <Property Type="String" Name="CDM_Type" Nullable="true" MaxLength="1" />
         </ComplexType>
+        <ComplexType Name="PLG_Check_Pnr_La_Price_Result">
+          <Property Type="Int16" Name="Line" Nullable="true" />
+          <Property Type="Int32" Name="LA_ID" Nullable="true" />
+          <Property Type="String" Name="Hotel_Name" Nullable="true" MaxLength="60" />
+          <Property Type="String" Name="La_Supplier" Nullable="true" MaxLength="4" />
+          <Property Type="String" Name="SupplierName" Nullable="true" MaxLength="60" />
+          <Property Type="String" Name="FDate" Nullable="true" MaxLength="8" />
+          <Property Type="Int32" Name="Nigths" Nullable="true" />
+          <Property Type="String" Name="RClass" Nullable="true" MaxLength="3" />
+          <Property Type="String" Name="RType" Nullable="true" MaxLength="3" />
+          <Property Type="String" Name="Meals" Nullable="true" MaxLength="2" />
+          <Property Type="Int32" Name="Account" Nullable="true" />
+          <Property Type="String" Name="PX_ID" Nullable="true" MaxLength="10" />
+          <Property Type="Decimal" Name="Gross" Nullable="true" Precision="19" />
+          <Property Type="Decimal" Name="Nett" Nullable="true" Precision="19" />
+          <Property Type="Decimal" Name="GTax" Nullable="true" Precision="19" />
+          <Property Type="Decimal" Name="NTax" Nullable="true" Precision="19" />
+          <Property Type="String" Name="CC" Nullable="true" MaxLength="3" />
+          <Property Type="String" Name="BCC" Nullable="true" MaxLength="3" />
+          <Property Type="Single" Name="ClientComm" Nullable="true" />
+          <Property Type="Single" Name="SpcComm" Nullable="true" />
+          <Property Type="Decimal" Name="Net_WithOut_Com" Nullable="true" Precision="19" />
+        </ComplexType>
+        <EntityType Name="PNR_Link_Supplier">
+          <Key>
+            <PropertyRef Name="pnr_pnr" />
+            <PropertyRef Name="pla_line" />
+          </Key>
+          <Property Name="pnr_pnr" Type="Int32" Nullable="false" />
+          <Property Name="pla_line" Type="Int16" Nullable="false" />
+          <Property Name="la_supplier" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="false" />
+          <Property Name="rate_supplier" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="false" />
+          <Property Name="lnk_User" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="lnk_DateUpd" Type="DateTime" Nullable="false" Precision="0" />
+        </EntityType>
+        <EntityType Name="Pnr_Px">
+          <Key>
+            <PropertyRef Name="PX_ID" />
+            <PropertyRef Name="FL_ID" />
+            <PropertyRef Name="pnr_Pnr" />
+          </Key>
+          <Property Name="PX_ID" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="FL_ID" Type="Int32" Nullable="false" />
+          <Property Name="flt_Combine" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="pfp_Type" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="pnr_Pnr" Type="Int32" Nullable="false" />
+          <Property Name="pnr_agent" Type="String" Nullable="false" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="pfp_class" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="pfp_Return_id" Type="Int32" />
+          <Property Name="pfp_Return_Combine" Type="String" MaxLength="3" FixedLength="true" Unicode="false" />
+          <Property Name="pfp_Return_class" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="pfp_Return_Type" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="pfp_Ticket_Number" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="pfp_Ticket_Date" Type="DateTime" Precision="3" />
+          <Property Name="pfp_Ticket_Print_Oper" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="pfp_status" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="pfp_TOD" Type="Byte" />
+          <Property Name="pfp_LOC" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="pfp_Priority" Type="Byte" />
+          <Property Name="pfp_No_Show" Type="Boolean" />
+          <Property Name="PCK_ID" Type="Int32" />
+          <Property Name="pfp_DateUpd" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="pfp_User" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="ESource" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="PNR" Relationship="Ent.FK_Pnr_Px_Pnr" FromRole="Pnr_Px" ToRole="PNR" />
+        </EntityType>
+        <Association Name="FK_Pnr_Px_Pnr">
+          <End Type="Ent.PNR" Role="PNR" Multiplicity="1" />
+          <End Type="Ent.Pnr_Px" Role="Pnr_Px" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PNR">
+              <PropertyRef Name="pnr_Pnr" />
+            </Principal>
+            <Dependent Role="Pnr_Px">
+              <PropertyRef Name="pnr_Pnr" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1051,6 +1202,74 @@ warning 6002: The table/view 'test_Odyssea.dbo.Pnr_rate' does not have a primary
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="PLG_Check_Pnr_La_Price" FunctionName="Ent.Store.PLG_Check_Pnr_La_Price">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Ent.PLG_Check_Pnr_La_Price_Result">
+                <ScalarProperty Name="Line" ColumnName="Line" />
+                <ScalarProperty Name="LA_ID" ColumnName="LA_ID" />
+                <ScalarProperty Name="Hotel_Name" ColumnName="Hotel_Name" />
+                <ScalarProperty Name="La_Supplier" ColumnName="La_Supplier" />
+                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
+                <ScalarProperty Name="FDate" ColumnName="FDate" />
+                <ScalarProperty Name="Nigths" ColumnName="Nigths" />
+                <ScalarProperty Name="RClass" ColumnName="RClass" />
+                <ScalarProperty Name="RType" ColumnName="RType" />
+                <ScalarProperty Name="Meals" ColumnName="Meals" />
+                <ScalarProperty Name="Account" ColumnName="Account" />
+                <ScalarProperty Name="PX_ID" ColumnName="PX_ID" />
+                <ScalarProperty Name="Gross" ColumnName="Gross" />
+                <ScalarProperty Name="Nett" ColumnName="Nett" />
+                <ScalarProperty Name="GTax" ColumnName="GTax" />
+                <ScalarProperty Name="NTax" ColumnName="NTax" />
+                <ScalarProperty Name="CC" ColumnName="CC" />
+                <ScalarProperty Name="BCC" ColumnName="BCC" />
+                <ScalarProperty Name="ClientComm" ColumnName="ClientComm" />
+                <ScalarProperty Name="SpcComm" ColumnName="SpcComm" />
+                <ScalarProperty Name="Net_WithOut_Com" ColumnName="Net_WithOut_Com" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="PNR_Link_Supplier">
+            <EntityTypeMapping TypeName="Ent.PNR_Link_Supplier">
+              <MappingFragment StoreEntitySet="PNR_Link_Supplier">
+                <ScalarProperty Name="lnk_DateUpd" ColumnName="lnk_DateUpd" />
+                <ScalarProperty Name="lnk_User" ColumnName="lnk_User" />
+                <ScalarProperty Name="rate_supplier" ColumnName="rate_supplier" />
+                <ScalarProperty Name="la_supplier" ColumnName="la_supplier" />
+                <ScalarProperty Name="pla_line" ColumnName="pla_line" />
+                <ScalarProperty Name="pnr_pnr" ColumnName="pnr_pnr" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Pnr_Px">
+            <EntityTypeMapping TypeName="Ent.Pnr_Px">
+              <MappingFragment StoreEntitySet="Pnr_Px">
+                <ScalarProperty Name="ESource" ColumnName="ESource" />
+                <ScalarProperty Name="pfp_User" ColumnName="pfp_User" />
+                <ScalarProperty Name="pfp_DateUpd" ColumnName="pfp_DateUpd" />
+                <ScalarProperty Name="PCK_ID" ColumnName="PCK_ID" />
+                <ScalarProperty Name="pfp_No_Show" ColumnName="pfp_No_Show" />
+                <ScalarProperty Name="pfp_Priority" ColumnName="pfp_Priority" />
+                <ScalarProperty Name="pfp_LOC" ColumnName="pfp_LOC" />
+                <ScalarProperty Name="pfp_TOD" ColumnName="pfp_TOD" />
+                <ScalarProperty Name="pfp_status" ColumnName="pfp_status" />
+                <ScalarProperty Name="pfp_Ticket_Print_Oper" ColumnName="pfp_Ticket_Print_Oper" />
+                <ScalarProperty Name="pfp_Ticket_Date" ColumnName="pfp_Ticket_Date" />
+                <ScalarProperty Name="pfp_Ticket_Number" ColumnName="pfp_Ticket_Number" />
+                <ScalarProperty Name="pfp_Return_Type" ColumnName="pfp_Return_Type" />
+                <ScalarProperty Name="pfp_Return_class" ColumnName="pfp_Return_class" />
+                <ScalarProperty Name="pfp_Return_Combine" ColumnName="pfp_Return_Combine" />
+                <ScalarProperty Name="pfp_Return_id" ColumnName="pfp_Return_id" />
+                <ScalarProperty Name="pfp_class" ColumnName="pfp_class" />
+                <ScalarProperty Name="pnr_agent" ColumnName="pnr_agent" />
+                <ScalarProperty Name="pnr_Pnr" ColumnName="pnr_Pnr" />
+                <ScalarProperty Name="pfp_Type" ColumnName="pfp_Type" />
+                <ScalarProperty Name="flt_Combine" ColumnName="flt_Combine" />
+                <ScalarProperty Name="FL_ID" ColumnName="FL_ID" />
+                <ScalarProperty Name="PX_ID" ColumnName="PX_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

@@ -1,16 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Peleg.CalculatePnrNet;
-using Peleg.CalculatePnrNet.Data;
-using Peleg.CalculatePnrNet.Services;
+using Peleg.CalculatePnrNet.Model;
 
 namespace TestCalculatePnrNet
 {
@@ -34,22 +26,16 @@ namespace TestCalculatePnrNet
 
             try
             {
-                //TODO: Specify the connection string here and make PnrDbContext private in the dll
-                using (var context = new PnrDbContext())
+                string cs = uPanel.Connection.SqlConnectionString;
+                var calculator = new CalculatePNR(ref cs);
+                CalculationResult result = calculator.Calculate(pnrId);
+                if (!result.Success)
                 {
-                    var calculator = new CalculatePNR(context);
-                    decimal grossAmount = calculator.CalcGross(pnrId);
-                    decimal net = calculator.CalcNet(pnrId);
-
-                    lblMessage.Text = $"Gross Amount: {grossAmount}";
+                    MessageBox.Show(result.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
                 }
 
-                //using (CalculateService calculateService = new CalculateService(uPanel.Connection.SqlConnectionString, pnrId))
-                //{
-                //    decimal grossAmount = calculateService.CalculateGross();
-                //    lblResult.Text = grossAmount.ToString(CultureInfo.InvariantCulture);
-                //    lblMessage.Text = $"Gross Amount: {grossAmount}";
-                //}
+                lblMessage.Text = $"Gross Amount: {result.Value}";
             }
             catch (KeyNotFoundException)
             {

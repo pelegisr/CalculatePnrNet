@@ -99,6 +99,9 @@
     <Compile Include="Data\PCK_Package.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Data\PLG_Check_Pnr_La_Price_Result.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Data\Plg_GetFull_CDM_Data_Result.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -111,17 +114,24 @@
     <Compile Include="Data\Pnr_La.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Data\PNR_Link_Supplier.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\Pnr_Px.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Data\Pnr_rate.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
-    <Compile Include="DTO\CDMData.cs" />
-    <Compile Include="DTO\GlobalParameters.cs" />
+    <Compile Include="Model\CalculationResult.cs" />
+    <Compile Include="Model\GlobalParameters.cs" />
+    <Compile Include="Model\PnrRate.cs" />
     <Compile Include="Services\CalculatePNR.cs" />
     <Compile Include="Services\CalculationService.cs" />
     <Compile Include="Data\PnrDbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\UtilService.cs" />
-    <Compile Include="DTO\PnrData.cs" />
+    <Compile Include="Model\PnrModel.cs" />
     <Compile Include="Services\PnrService.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -174,7 +184,17 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <COMReference Include="StartMenuInterface">
+      <Guid>{31F85091-568A-44EE-BA74-9A1C80834471}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

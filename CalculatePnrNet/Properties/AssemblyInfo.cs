@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("CalculatePnrNet")]
-[assembly: AssemblyDescription("A service to calculate Pnr gross and net prices, according to all rules and specifications (Zina)")]
+[assembly: AssemblyDescription("A service to calculate PnrModel gross and net prices, according to all rules and specifications (Zina)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Peleg")]
 [assembly: AssemblyProduct("CalculatePnrNet")]
